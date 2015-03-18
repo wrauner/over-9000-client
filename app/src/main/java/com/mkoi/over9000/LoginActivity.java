@@ -4,14 +4,29 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 
 public class LoginActivity extends ActionBarActivity {
+
+    private TextView titleTxtView, registerTxtClick;
+    private EditText loginEmail, loginPswd;
+    private Button loginBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        titleTxtView = (TextView) findViewById(R.id.titleTxtView);
+        registerTxtClick = (TextView) findViewById(R.id.registerTxtClick);
+        loginEmail = (EditText) findViewById(R.id.loginEmail);
+        loginPswd = (EditText) findViewById(R.id.loginPswd);
+        loginBtn = (Button) findViewById(R.id.loginBtn);
     }
 
 
