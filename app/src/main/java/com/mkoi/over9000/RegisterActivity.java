@@ -1,86 +1,89 @@
 package com.mkoi.over9000;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
 
 /**
  * Created by Bartek on 2015-03-18.
  */
+@EActivity(R.layout.activity_register)
 public class RegisterActivity extends Activity {
 
-    TextView registerTitle;
-    EditText registerFirstName, registerLastName, registerNick,
-                     registerEmail, registerPassword, registerRepeatPswd;
-    Button registerBtn;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+    @ViewById(R.id.registerFirstName)
+    EditText registerFirstName;
 
-        registerTitle = (TextView) findViewById(R.id.registerTitleTxt);
-        registerFirstName = (EditText) findViewById(R.id.registerFirstName);
-        registerLastName = (EditText) findViewById(R.id.registerLastName);
-        registerNick = (EditText) findViewById(R.id.registerNick);
-        registerEmail = (EditText) findViewById(R.id.registerEmail);
-        registerPassword = (EditText) findViewById(R.id.registerPassword);
-        registerRepeatPswd = (EditText) findViewById(R.id.registerRepeatPswd);
-        registerBtn = (Button) findViewById(R.id.registerBtn);
+    @ViewById(R.id.registerLastName)
+    EditText registerLastName;
 
-    }
+    @ViewById(R.id.registerNick)
+    EditText registerNick;
 
+    @ViewById(R.id.registerEmail)
+    EditText registerEmail;
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
-    }
+    @ViewById(R.id.registerPassword)
+    EditText registerPassword;
 
+    @ViewById(R.id.registerRepeatPswd)
+    EditText registerRepeatPswd;
+
+    @Click(R.id.registerBtn)
     public void addNewAccount(View view){
-//        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-//        startActivity(intent);
-        validateInputFields();
+        if (validateInputFields()) {
+            //TODO register
+        }
     }
 
-    public void validateInputFields(){
-        String password, cpassword;
+    private boolean validateInputFields() {
+        boolean result = true;
+
         if (registerFirstName.getText().toString().trim().equals("")){
             registerFirstName.setError("Podaj imię");
+            result = false;
         }
         if (registerLastName.getText().toString().trim().equals("")){
             registerLastName.setError("Podaj nazwisko");
+            result = false;
         }
         if (registerNick.getText().toString().trim().equals("")) {
             registerNick.setError("Podaj nick");
+            result = false;
         }
         String email = registerEmail.getText().toString().trim();
+
         boolean validate = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
         if (!validate){
             registerEmail.setError("Błędny format maila");
+            result = false;
         }
         if (email.equals("")) {
             registerEmail.setError("Podaj email");
+            result = false;
         }
-        password = registerPassword.getText().toString().trim();
+
+        String password = registerPassword.getText().toString().trim();
         if (password.equals("")) {
             registerPassword.setError("Podaj hasło");
+            result = false;
         }
-        cpassword = registerRepeatPswd.getText().toString().trim();
+        String cpassword = registerRepeatPswd.getText().toString().trim();
         if (cpassword.equals("")) {
             registerRepeatPswd.setError("Powtórz hasło");
+            result = false;
         } else {
             if (!cpassword.equals(password)){
                 registerPassword.setText("");
                 registerRepeatPswd.setText("");
                 registerRepeatPswd.setError("Podałeś dwa różne hasła!");
+                result = false;
             }
         }
+
+        return result;
     }
 }

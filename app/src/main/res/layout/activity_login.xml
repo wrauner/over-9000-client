@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="OVER 9000"
+        android:text="@string/app_name"
         android:id="@+id/titleTxtView"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -23,7 +23,7 @@
         android:layout_above="@+id/loginPswd"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:hint="E-mail..." />
+        android:hint="@string/emailLabel" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -34,12 +34,12 @@
         android:layout_above="@+id/loginBtn"
         android:layout_alignStart="@+id/loginEmail"
         android:layout_marginBottom="20dp"
-        android:hint="Hasło..." />
+        android:hint="@string/passwordLabel" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Zaloguj"
+        android:text="@string/loginButton"
         android:id="@+id/loginBtn"
         android:layout_above="@+id/registerTxtClick"
         android:layout_centerHorizontal="true"
@@ -50,7 +50,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Zarejestruj się"
+        android:text="@string/registerButton"
         android:id="@+id/registerTxtClick"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

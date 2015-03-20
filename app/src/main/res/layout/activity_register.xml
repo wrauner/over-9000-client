@@ -16,7 +16,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rejestracja użytkownika"
+        android:text="@string/registerLabel"
         android:id="@+id/registerTitleTxt"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
@@ -28,7 +28,7 @@
         android:layout_below="@+id/registerTitleTxt"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:hint="Imię"
+        android:hint="@string/nameLabel"
         android:layout_alignParentEnd="false"
         android:singleLine="true"
         android:inputType="textCapSentences" />
@@ -41,7 +41,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:layout_alignParentEnd="true"
-        android:hint="Nazwisko"
+        android:hint="@string/lastnameLabel"
         android:singleLine="true"
         android:inputType="textCapSentences" />
 
@@ -52,7 +52,7 @@
         android:layout_below="@+id/registerLastName"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:hint="Nick"
+        android:hint="@string/nickLabel"
         android:singleLine="true" />
 
     <EditText
@@ -64,7 +64,7 @@
         android:layout_below="@+id/registerNick"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:hint="Adres e-mail" />
+        android:hint="@string/longEmailLabel" />
 
     <EditText
         android:layout_width="match_parent"
@@ -75,7 +75,7 @@
         android:layout_below="@+id/registerEmail"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:hint="Hasło" />
+        android:hint="@string/passwordLabel" />
 
     <EditText
         android:layout_width="match_parent"
@@ -86,12 +86,12 @@
         android:layout_below="@+id/registerPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:hint="Powtórz hasło" />
+        android:hint="@string/repeatPasswordLabel" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Utwórz konto"
+        android:text="@string/createAccount"
         android:id="@+id/registerBtn"
         android:layout_below="@+id/registerRepeatPswd"
         android:layout_centerHorizontal="true"
