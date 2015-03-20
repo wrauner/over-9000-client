@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 21
@@ -22,4 +23,17 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
+    apt 'org.androidannotations:androidannotations:3.2'
+    compile 'org.androidannotations:androidannotations:3.2'
+    compile 'com.github.nkzawa:socket.io-client:0.4.2'
+    compile 'org.codehaus.jackson:jackson-lgpl:0.9.5'
+}
+
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0].processResources.manifestFile
+        // if you have multiple outputs (when using splits), you may want to have other index than 0
+
+        resourcePackageName 'com.mkoi.over9000'
+    }
 }
