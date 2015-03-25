@@ -3,7 +3,6 @@ package com.mkoi.over9000.socket;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.github.nkzawa.emitter.Emitter;
 
@@ -26,7 +25,6 @@ public class SocketListener implements Emitter.Listener {
     @Override
     public void call(Object... args) {
         JSONObject obj = (JSONObject) args[0];
-        Log.d(LOG_TAG, obj.toString());
         Bundle bundle = new Bundle();
         bundle.putString("event", event);
         bundle.putSerializable("data", obj.toString());

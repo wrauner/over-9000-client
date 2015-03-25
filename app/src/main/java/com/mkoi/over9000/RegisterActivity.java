@@ -3,7 +3,6 @@ package com.mkoi.over9000;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +15,8 @@ import com.mkoi.over9000.preferences.UserPreferences_;
 import com.mkoi.over9000.secure.PasswordUtil;
 import com.mkoi.over9000.socket.SocketConnection;
 
+import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
@@ -51,9 +52,11 @@ public class RegisterActivity extends Activity {
     @Pref
     UserPreferences_ userPreferences;
 
-    Handler handler = new RegisterHandler(this);
+    @Bean
+    RegisterHandler handler;
 
-    SocketConnection connection = SocketConnection.get(handler);
+    @Bean
+    SocketConnection connection;
 
 
     @Click(R.id.registerBtn)
@@ -136,5 +139,10 @@ public class RegisterActivity extends Activity {
             AlertDialog dialog = new AlertDialog.Builder(this).setMessage("Błąd podczas " +
                     "rejestracji: " + registerMessage.getDescription()).show();
         }
+    }
+
+    @AfterInject
+    public void setupHandler() {
+        connection.setupRegisterHandler(handler);
     }
 }
