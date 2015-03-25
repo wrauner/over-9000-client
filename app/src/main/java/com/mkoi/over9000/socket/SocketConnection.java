@@ -22,7 +22,8 @@ public class SocketConnection {
     public static final String LOG_TAG = "SocketConnection";
     public static final String REGISTER_USER = "registerUser";
     public static final String REGISTER_RESPONSE = "registerResponse";
-    public static final String SERVER_ADDRESS = "http://192.168.0.4:3000";
+    //public static final String SERVER_ADDRESS = "http://192.168.0.4:3000";
+    public static final String SERVER_ADDRESS = "http://10.1.8.63:3000";
 
     private Socket socket;
     private static SocketConnection instance;

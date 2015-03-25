@@ -5,7 +5,7 @@ package com.mkoi.over9000.message;
  */
 public class LoginMessage {
     private String email;
-    private String hash;
+    private String password;
 
     public String getEmail(){
         return email;
@@ -15,11 +15,11 @@ public class LoginMessage {
         this.email = email;
     }
 
-    public String getHash() {
-        return hash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setHash(String hash) {
-        this.hash = hash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

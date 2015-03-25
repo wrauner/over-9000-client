@@ -22,8 +22,6 @@
         android:layout_centerHorizontal="true" />
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/registerFirstName"
         android:layout_below="@+id/registerTitleTxt"
         android:layout_centerHorizontal="true"
@@ -31,11 +29,11 @@
         android:hint="@string/nameLabel"
         android:layout_alignParentEnd="false"
         android:singleLine="true"
-        android:inputType="textCapSentences" />
+        android:inputType="textCapSentences"
+        style="@style/AppRegisterEditText"/>
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/AppRegisterEditText"
         android:id="@+id/registerLastName"
         android:layout_below="@+id/registerFirstName"
         android:layout_centerHorizontal="true"
@@ -46,8 +44,7 @@
         android:inputType="textCapSentences" />
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/AppRegisterEditText"
         android:id="@+id/registerNick"
         android:layout_below="@+id/registerLastName"
         android:layout_centerHorizontal="true"
@@ -56,8 +53,7 @@
         android:singleLine="true" />
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/AppRegisterEditText"
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/registerEmail"
@@ -67,8 +63,7 @@
         android:hint="@string/longEmailLabel" />
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/AppRegisterEditText"
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/registerPassword"
@@ -78,8 +73,7 @@
         android:hint="@string/passwordLabel" />
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/AppRegisterEditText"
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/registerRepeatPswd"
@@ -89,8 +83,6 @@
         android:hint="@string/repeatPasswordLabel" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="@string/createAccount"
         android:id="@+id/registerBtn"
         android:layout_below="@+id/registerRepeatPswd"
@@ -98,7 +90,8 @@
         android:singleLine="true"
         android:layout_marginTop="30dp"
         android:nestedScrollingEnabled="false"
-        android:onClick="addNewAccount" />
+        android:onClick="addNewAccount"
+        style="@style/AppButton"/>
 
 </RelativeLayout>
     </ScrollView>
