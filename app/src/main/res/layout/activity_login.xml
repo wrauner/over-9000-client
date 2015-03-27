@@ -40,7 +40,10 @@
         android:layout_alignStart="@+id/loginEmail"
         android:layout_marginBottom="15dp"
         android:hint="@string/passwordLabel"
-        style="@style/AppLoginEditText"/>
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
+        <!--style="@style/AppLoginEditText" -->
+
 
 
     <Button

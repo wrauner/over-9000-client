@@ -6,14 +6,11 @@ import android.os.Message;
 import android.util.Log;
 
 import com.mkoi.over9000.RegisterActivity;
-import com.mkoi.over9000.message.RegisterMessage;
 import com.mkoi.over9000.socket.SocketConnection;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.codehaus.jackson.map.ObjectMapper;
-
-import java.io.IOException;
 
 /**
  * @author Wojciech Rauner
@@ -33,12 +30,12 @@ public class RegisterHandler extends Handler {
         if (bundle.getString("event").equals(SocketConnection.REGISTER_RESPONSE)) {
             Log.d(LOG_TAG, "Received message " + SocketConnection.REGISTER_RESPONSE);
             Log.d(LOG_TAG, "Message body: " + bundle.getString("data"));
-            try {
-                RegisterMessage registerMessage = objectMapper.readValue(bundle.getString("data"), RegisterMessage.class);
-                registerActivity.registerResponse(registerMessage);
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Error while converting JSON to object ", e);
-            }
+//            try {
+//                RegisterMessage registerMessage = objectMapper.readValue(bundle.getString("data"), RegisterMessage.class);
+//                registerActivity.registerResponse(registerMessage);
+//            } catch (IOException e) {
+//                Log.e(LOG_TAG, "Error while converting JSON to object ", e);
+//            }
         }
     }
 }

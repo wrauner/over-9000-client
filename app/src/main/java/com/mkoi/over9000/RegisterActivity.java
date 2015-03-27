@@ -9,17 +9,19 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.mkoi.over9000.handler.RegisterHandler;
-import com.mkoi.over9000.message.RegisterMessage;
+import com.mkoi.over9000.http.RestClient;
+import com.mkoi.over9000.message.response.RegisterResponse;
 import com.mkoi.over9000.model.User;
 import com.mkoi.over9000.preferences.UserPreferences_;
 import com.mkoi.over9000.secure.PasswordUtil;
 import com.mkoi.over9000.socket.SocketConnection;
 
-import org.androidannotations.annotations.AfterInject;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.rest.RestService;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.security.NoSuchAlgorithmException;
@@ -58,11 +60,24 @@ public class RegisterActivity extends Activity {
     @Bean
     SocketConnection connection;
 
+    @RestService
+    RestClient restClient;
+
 
     @Click(R.id.registerBtn)
-    public void addNewAccount(View view){
+    @Background
+    public void addNewAccount(View view) {
         if (validateUser()) {
-            connection.registerUser(getUser());
+            RegisterResponse response = restClient.userRegister(getUser());
+            Log.d(LOG_TAG, "Register Response:" + response.toString());
+            if (response.getError().equals("0")) {
+                Log.d(LOG_TAG, "User registered");
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity_.class);
+                startActivity(intent);
+            } else {
+                AlertDialog dialog = new AlertDialog.Builder(this).setMessage("Błąd podczas " +
+                        "rejestracji: " + response.getDescription()).show();
+            }
         }
     }
 
@@ -95,6 +110,10 @@ public class RegisterActivity extends Activity {
         if (password.equals("")) {
             registerPassword.setError("Podaj hasło");
             return false;
+        } else {
+            if (password.length() < 6){
+                registerPassword.setError("Za krótkie hasło");
+            }
         }
         String cpassword = registerRepeatPswd.getText().toString().trim();
         if (cpassword.equals("")) {
@@ -130,19 +149,19 @@ public class RegisterActivity extends Activity {
         return user;
     }
 
-    public void registerResponse(RegisterMessage registerMessage) {
-        if (registerMessage.getError().equals("0")) {
-            Log.d(LOG_TAG, "User registered");
-            Intent intent = new Intent(RegisterActivity.this, LoginActivity_.class);
-            startActivity(intent);
-        } else {
-            AlertDialog dialog = new AlertDialog.Builder(this).setMessage("Błąd podczas " +
-                    "rejestracji: " + registerMessage.getDescription()).show();
-        }
-    }
+//    public void registerResponse(RegisterMessage registerMessage) {
+//        if (registerMessage.getError().equals("0")) {
+//            Log.d(LOG_TAG, "User registered");
+//            Intent intent = new Intent(RegisterActivity.this, LoginActivity_.class);
+//            startActivity(intent);
+//        } else {
+//            AlertDialog dialog = new AlertDialog.Builder(this).setMessage("Błąd podczas " +
+//                    "rejestracji: " + registerMessage.getDescription()).show();
+//        }
+//    }
 
-    @AfterInject
-    public void setupHandler() {
-        connection.setupRegisterHandler(handler);
-    }
+//    @AfterInject
+//    public void setupHandler() {
+//        connection.setupRegisterHandler(handler);
+//    }
 }
