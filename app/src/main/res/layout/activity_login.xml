@@ -1,36 +1,46 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".LoginActivity"
-    style="@style/AppBackground">
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".LoginActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/applicationName"
+        android:textColor="#ff23ff00"
+        android:textSize="70dp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:text="OVER\n9000"
+        />
     <!--
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:id="@+id/titleTxtView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/applicationName2"
+        android:textColor="#ff23ff00"
+        android:textSize="70dp"
+        android:layout_above="@+id/loginEmail"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        android:text="9000" />
         -->
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/introImage"
-        android:src="@drawable/intro"
-        android:layout_alignParentEnd="true" />
 
     <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/loginEmail"
         android:layout_above="@+id/loginPswd"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:hint="@string/emailLabel"
-        style="@style/AppLoginEditText"/>
+        android:layout_marginBottom="5dp"
+        android:hint="@string/emailLabel"/>
 
     <EditText
         android:inputType="textPassword"
@@ -38,34 +48,31 @@
         android:id="@+id/loginPswd"
         android:layout_above="@+id/loginBtn"
         android:layout_alignStart="@+id/loginEmail"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="12dp"
         android:hint="@string/passwordLabel"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"/>
-        <!--style="@style/AppLoginEditText" -->
-
-
 
     <Button
         android:text="@string/loginButton"
         android:id="@+id/loginBtn"
         android:layout_above="@+id/registerTxtClick"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="12dp"
         android:focusable="true"
         android:layout_alignParentStart="false"
-        style="@style/AppButton"/>
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
 
     <TextView
         android:text="@string/registerButton"
         android:id="@+id/registerTxtClick"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:textColor="#000000"
         android:clickable="true"
         android:onClick="goToRegister"
         android:enabled="true"
-        style="@style/AppLoginRegisterText"/>
-
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
 
 </RelativeLayout>
