@@ -13,6 +13,7 @@ import com.mkoi.over9000.message.response.LoginResponse;
 import com.mkoi.over9000.preferences.UserPreferences_;
 import com.mkoi.over9000.secure.PasswordUtil;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
@@ -48,9 +49,14 @@ public class LoginActivity extends Activity {
     @Background
     public void loginMe(){
         if(validateInput()){
-            LoginResponse loginResponse = restClient.userLogin(getLogin());
-            Log.d(LOG_TAG, "Login Response: " + loginResponse.toString());
+            loginUser(getLoginMessage());
         }
+    }
+
+    @Background
+    public void loginUser(LoginMessage message) {
+        LoginResponse loginResponse = restClient.userLogin(message);
+        Log.d(LOG_TAG, "Login Response: " + loginResponse.toString());
     }
 
     public boolean validateInput(){
@@ -76,7 +82,7 @@ public class LoginActivity extends Activity {
         return true;
     }
 
-    private LoginMessage getLogin(){
+    private LoginMessage getLoginMessage(){
         LoginMessage loginMessage = new LoginMessage();
         try {
             loginMessage.setEmail(loginEmail.getText().toString().trim());
@@ -89,6 +95,11 @@ public class LoginActivity extends Activity {
             Log.e(LOG_TAG, "Error while calculating hash", e);
         }
         return loginMessage;
+    }
+
+    @AfterViews
+    public void updateLogin() {
+        loginEmail.setText(userPreferences.email().getOr(""));
     }
 
 }

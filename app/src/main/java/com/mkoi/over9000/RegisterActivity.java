@@ -65,19 +65,23 @@ public class RegisterActivity extends Activity {
 
 
     @Click(R.id.registerBtn)
-    @Background
     public void addNewAccount(View view) {
         if (validateUser()) {
-            RegisterResponse response = restClient.userRegister(getUser());
-            Log.d(LOG_TAG, "Register Response:" + response.toString());
-            if (response.getError().equals("0")) {
-                Log.d(LOG_TAG, "User registered");
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity_.class);
-                startActivity(intent);
-            } else {
-                AlertDialog dialog = new AlertDialog.Builder(this).setMessage("Błąd podczas " +
-                        "rejestracji: " + response.getDescription()).show();
-            }
+            registerAccount(getUser());
+        }
+    }
+
+    @Background
+    public void registerAccount(User user) {
+        RegisterResponse response = restClient.userRegister(user);
+        Log.d(LOG_TAG, "Register Response:" + response.toString());
+        if (response.getError().equals("0")) {
+            Log.d(LOG_TAG, "User registered");
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity_.class);
+            startActivity(intent);
+        } else {
+            AlertDialog dialog = new AlertDialog.Builder(this).setMessage("Błąd podczas " +
+                    "rejestracji: " + response.getDescription()).show();
         }
     }
 

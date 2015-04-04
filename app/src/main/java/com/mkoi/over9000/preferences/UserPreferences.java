@@ -6,7 +6,7 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
  * @author Wojciech Rauner
  */
 
-@SharedPref
+@SharedPref(value=SharedPref.Scope.UNIQUE)
 public interface UserPreferences {
 
     String salt();
