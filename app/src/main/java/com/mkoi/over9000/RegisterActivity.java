@@ -20,6 +20,7 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.rest.RestService;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -75,6 +76,11 @@ public class RegisterActivity extends Activity {
     public void registerAccount(User user) {
         RegisterResponse response = restClient.userRegister(user);
         Log.d(LOG_TAG, "Register Response:" + response.toString());
+        registerResult(response);
+    }
+
+    @UiThread
+    public void registerResult(RegisterResponse response) {
         if (response.getError().equals("0")) {
             Log.d(LOG_TAG, "User registered");
             Intent intent = new Intent(RegisterActivity.this, LoginActivity_.class);

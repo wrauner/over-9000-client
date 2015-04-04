@@ -13,4 +13,6 @@ public interface UserPreferences {
 
     String email();
 
+    String token();
+
 }

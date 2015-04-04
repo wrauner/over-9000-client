@@ -1,6 +1,7 @@
 package com.mkoi.over9000;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.util.Base64;
 import android.util.Log;
@@ -17,6 +18,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.rest.RestService;
 import org.androidannotations.annotations.sharedpreferences.Pref;
@@ -57,6 +59,18 @@ public class LoginActivity extends Activity {
     public void loginUser(LoginMessage message) {
         LoginResponse loginResponse = restClient.userLogin(message);
         Log.d(LOG_TAG, "Login Response: " + loginResponse.toString());
+        loginResult(loginResponse);
+    }
+
+    @UiThread
+    public void loginResult(LoginResponse response) {
+        if(response.getError().equals("0")) {
+            userPreferences.token().put(response.getToken());
+            //TODO setup socket and start new activity
+        } else {
+            AlertDialog dialog = new AlertDialog.Builder(this).setMessage("Błąd podczas " +
+                    "logowania: " + response.getDescription()).show();
+        }
     }
 
     public boolean validateInput(){
@@ -78,7 +92,6 @@ public class LoginActivity extends Activity {
             loginPswd.setError("Podaj haslo");
             return false;
         }
-
         return true;
     }
 
@@ -98,7 +111,7 @@ public class LoginActivity extends Activity {
     }
 
     @AfterViews
-    public void updateLogin() {
+    public void updateEmail() {
         loginEmail.setText(userPreferences.email().getOr(""));
     }
 
