@@ -28,7 +28,7 @@ import java.security.NoSuchAlgorithmException;
 @EActivity(R.layout.activity_login)
 public class LoginActivity extends Activity {
 
-    public static final String LOG_TAG = "LoginActivity";
+    public static final String LOG_TAG = "Over9000.LoginActivity";
     @ViewById(R.id.loginEmail)
     EditText loginEmail;
 
@@ -67,6 +67,8 @@ public class LoginActivity extends Activity {
         if(response.getError().equals("0")) {
             userPreferences.token().put(response.getToken());
             //TODO setup socket and start new activity
+            Intent intent = new Intent(LoginActivity.this, ChatActivity_.class);
+            startActivity(intent);
         } else {
             AlertDialog dialog = new AlertDialog.Builder(this).setMessage("Błąd podczas " +
                     "logowania: " + response.getDescription()).show();

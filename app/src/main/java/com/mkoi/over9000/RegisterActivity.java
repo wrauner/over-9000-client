@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.mkoi.over9000.handler.RegisterHandler;
 import com.mkoi.over9000.http.RestClient;
 import com.mkoi.over9000.message.response.RegisterResponse;
 import com.mkoi.over9000.model.User;
@@ -32,7 +31,7 @@ import java.security.NoSuchAlgorithmException;
  */
 @EActivity(R.layout.activity_register)
 public class RegisterActivity extends Activity {
-    public static final String LOG_TAG = "RegisterActivity";
+    public static final String LOG_TAG = "Over9000.RegisterActivity";
 
     @ViewById(R.id.registerFirstName)
     EditText registerFirstName;
@@ -54,9 +53,6 @@ public class RegisterActivity extends Activity {
 
     @Pref
     UserPreferences_ userPreferences;
-
-    @Bean
-    RegisterHandler handler;
 
     @Bean
     SocketConnection connection;
@@ -153,25 +149,10 @@ public class RegisterActivity extends Activity {
             user.setPassword(hash);
             userPreferences.salt().put(Base64.encodeToString(salt, Base64.DEFAULT));
             userPreferences.email().put(user.getEmail());
+            userPreferences.nick().put(user.getNick());
         } catch (NoSuchAlgorithmException e) {
             Log.e(LOG_TAG, "Error while calculating hash ", e);
         }
         return user;
     }
-
-//    public void registerResponse(RegisterMessage registerMessage) {
-//        if (registerMessage.getError().equals("0")) {
-//            Log.d(LOG_TAG, "User registered");
-//            Intent intent = new Intent(RegisterActivity.this, LoginActivity_.class);
-//            startActivity(intent);
-//        } else {
-//            AlertDialog dialog = new AlertDialog.Builder(this).setMessage("Błąd podczas " +
-//                    "rejestracji: " + registerMessage.getDescription()).show();
-//        }
-//    }
-
-//    @AfterInject
-//    public void setupHandler() {
-//        connection.setupRegisterHandler(handler);
-//    }
 }

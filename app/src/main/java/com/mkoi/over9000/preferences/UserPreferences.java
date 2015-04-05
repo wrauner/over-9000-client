@@ -15,4 +15,6 @@ public interface UserPreferences {
 
     String token();
 
+    String nick();
+
 }

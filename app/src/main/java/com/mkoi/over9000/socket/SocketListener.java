@@ -12,7 +12,8 @@ import org.json.JSONObject;
  * @author Wojciech Rauner
  */
 public class SocketListener implements Emitter.Listener {
-    public static final String LOG_TAG = "SocketListener";
+    public static final String EVENT = "EVENT";
+    public static final String DATA = "DATA";
 
     private String event;
     private Handler handler;
@@ -26,8 +27,8 @@ public class SocketListener implements Emitter.Listener {
     public void call(Object... args) {
         JSONObject obj = (JSONObject) args[0];
         Bundle bundle = new Bundle();
-        bundle.putString("event", event);
-        bundle.putSerializable("data", obj.toString());
+        bundle.putString(EVENT, event);
+        bundle.putSerializable(DATA, obj.toString());
         Message message = new Message();
         message.setData(bundle);
         handler.sendMessage(message);
