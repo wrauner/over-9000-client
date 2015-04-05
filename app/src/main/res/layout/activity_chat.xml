@@ -4,22 +4,16 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.mkoi.over9000.ChatActivity">
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/chatList"
-        android:layout_alignParentTop ="true"/>
+    tools:context="com.mkoi.over9000.ChatActivity"
+    android:orientation="vertical">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
-        android:layout_below="@+id/chatList">
+        android:id="@+id/linearLayout">
 
         <EditText
             android:width="0dp"
@@ -35,5 +29,17 @@
             android:layout_weight="0.05"
             android:id="@+id/sendButton"
             android:src="@android:drawable/ic_menu_send" />
+
     </LinearLayout>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:id="@+id/chatList"
+        android:layout_alignParentEnd="false"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
+        android:layout_above="@+id/linearLayout" />
+
 </RelativeLayout>
