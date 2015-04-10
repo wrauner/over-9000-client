@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.mkoi.over9000.connection.ConnectionDetector;
 import com.mkoi.over9000.http.RestClient;
 import com.mkoi.over9000.message.LoginMessage;
 import com.mkoi.over9000.message.response.LoginResponse;
@@ -16,6 +17,7 @@ import com.mkoi.over9000.secure.PasswordUtil;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
@@ -41,6 +43,9 @@ public class LoginActivity extends Activity {
     @Pref
     UserPreferences_ userPreferences;
 
+    @Bean
+    ConnectionDetector connectionDetector;
+
     @Click(R.id.registerBtn)
     public void goToRegister(View view){
         Intent intent = new Intent(LoginActivity.this, RegisterActivity_.class);
@@ -51,7 +56,14 @@ public class LoginActivity extends Activity {
     @Background
     public void loginMe(){
         if(validateInput()){
-            loginUser(getLoginMessage());
+            if(connectionDetector.isConnectedToInternet()){
+                loginUser(getLoginMessage());
+            } else {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setMessage("Brak połączenia z Internetem");
+                dialog.setPositiveButton("OK",null);
+                dialog.show();
+            }
         }
     }
 

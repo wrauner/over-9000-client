@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.mkoi.over9000.connection.ConnectionDetector;
 import com.mkoi.over9000.http.RestClient;
 import com.mkoi.over9000.message.response.RegisterResponse;
 import com.mkoi.over9000.model.User;
@@ -31,7 +32,7 @@ import java.security.NoSuchAlgorithmException;
  */
 @EActivity(R.layout.activity_register)
 public class RegisterActivity extends Activity {
-    public static final String LOG_TAG = "Over9000.RegisterActivity";
+    public static final String LOG_TAG = "Over9000.RegisterActiv";
 
     @ViewById(R.id.registerFirstName)
     EditText registerFirstName;
@@ -60,11 +61,21 @@ public class RegisterActivity extends Activity {
     @RestService
     RestClient restClient;
 
+    @Bean
+    ConnectionDetector connectionDetector;
+
 
     @Click(R.id.registerBtn)
     public void addNewAccount(View view) {
         if (validateUser()) {
-            registerAccount(getUser());
+            if(connectionDetector.isConnectedToInternet()){
+                registerAccount(getUser());
+            } else {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setMessage("Brak połączenia z Internetem");
+                dialog.setPositiveButton("OK", null);
+                dialog.show();
+            }
         }
     }
 
