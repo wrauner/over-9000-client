@@ -17,5 +17,10 @@
     <string name="longEmailLabel">Adres e-mail</string>
     <string name="repeatPasswordLabel">Powtórz hasło</string>
     <string name="createAccount">UTWÓRZ KONTO</string>
+    <string name="title_activity_friends">FriendsActivity</string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- FRIENDS ACTIVITY -->
+    <string name="searchHint">Wyszukaj użytkownika</string>
 
 </resources>

@@ -21,7 +21,11 @@
         </activity>
         <activity android:name=".RegisterActivity_" >
         </activity>
-        <activity android:name=".ChatActivity_">
+        <activity android:name=".ChatActivity_" >
+        </activity>
+        <activity
+            android:name=".FriendsActivity_"
+            android:label="@string/app_name" >
         </activity>
     </application>
 

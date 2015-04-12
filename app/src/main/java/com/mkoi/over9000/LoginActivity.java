@@ -79,7 +79,7 @@ public class LoginActivity extends Activity {
         if(response.getError().equals("0")) {
             userPreferences.token().put(response.getToken());
             //TODO setup socket and start new activity
-            Intent intent = new Intent(LoginActivity.this, ChatActivity_.class);
+            Intent intent = new Intent(LoginActivity.this, FriendsActivity_.class);
             startActivity(intent);
         } else {
             AlertDialog dialog = new AlertDialog.Builder(this).setMessage("Błąd podczas " +
