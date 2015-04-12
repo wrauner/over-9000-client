@@ -1,11 +1,13 @@
 package com.mkoi.over9000.http;
 
 import com.mkoi.over9000.message.LoginMessage;
+import com.mkoi.over9000.message.response.FriendResponse;
 import com.mkoi.over9000.message.response.LoginResponse;
 import com.mkoi.over9000.message.response.RegisterResponse;
 import com.mkoi.over9000.model.User;
 
 import org.androidannotations.annotations.rest.Accept;
+import org.androidannotations.annotations.rest.Get;
 import org.androidannotations.annotations.rest.Post;
 import org.androidannotations.annotations.rest.Rest;
 import org.androidannotations.api.rest.MediaType;
@@ -24,4 +26,9 @@ public interface RestClient {
     @Post("/register")
     @Accept(MediaType.APPLICATION_JSON)
     RegisterResponse userRegister(User user);
+
+    @Get("/search/{email}")
+    @Accept(MediaType.APPLICATION_JSON)
+    FriendResponse searchFriends(String email);
+
 }

@@ -56,4 +56,9 @@ public class FriendListAdapter extends BaseAdapter {
         friends.add(friend);
         notifyDataSetChanged();
     }
+
+    public void setFriends(List<Friend> friends) {
+        this.friends = friends;
+        notifyDataSetChanged();
+    }
 }
