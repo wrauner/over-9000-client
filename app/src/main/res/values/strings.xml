@@ -22,5 +22,6 @@
 
     <!-- FRIENDS ACTIVITY -->
     <string name="searchHint">Wyszukaj użytkownika</string>
+    <string name="yourFriendsText">Twoi znajomi</string>
 
 </resources>

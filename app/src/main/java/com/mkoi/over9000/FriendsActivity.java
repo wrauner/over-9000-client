@@ -10,6 +10,7 @@ import com.mkoi.over9000.adapter.FriendListAdapter;
 import com.mkoi.over9000.http.RestClient;
 import com.mkoi.over9000.message.response.FriendResponse;
 import com.mkoi.over9000.model.Friend;
+import com.mkoi.over9000.preferences.UserPreferences_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -19,6 +20,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.rest.RestService;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.List;
 
@@ -37,6 +39,9 @@ public class FriendsActivity extends Activity {
 
     @RestService
     RestClient restClient;
+
+    @Pref
+    UserPreferences_ userPreferences;
 
     @AfterViews
     public void bindAdapter() {
@@ -61,6 +66,23 @@ public class FriendsActivity extends Activity {
     @UiThread
     public void searchResult(List<Friend> friends) {
         Log.d(LOG_TAG, "Users found: "+friends.size());
+        adapter.setFriends(friends);
+    }
+
+    @AfterViews
+    @Background
+    public void refreshFriends() {
+        Log.d(LOG_TAG, "Refreshing friends list");
+        String authHeader = "Bearer "+userPreferences.token().get();
+        Log.d(LOG_TAG, "Header: "+authHeader);
+        restClient.setHeader("Authorization", authHeader);
+        FriendResponse result = restClient.getFriends();
+        refreshFriendsResult(result.getFriends());
+    }
+
+    @UiThread
+    public void refreshFriendsResult(List<Friend> friends) {
+        Log.d(LOG_TAG, "Friends downloaded: "+friends.size());
         adapter.setFriends(friends);
     }
 }

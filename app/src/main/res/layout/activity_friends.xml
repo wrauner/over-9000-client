@@ -32,9 +32,21 @@
     </LinearLayout>
 
     <ListView
+        android:animateLayoutChanges="true"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_below="@+id/linearLayout"
+        android:layout_below="@+id/yourFriendsText"
         android:id="@+id/friendList" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/yourFriendsText"
+        android:id="@+id/yourFriendsText"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp" />
 
 </RelativeLayout>

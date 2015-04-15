@@ -9,11 +9,13 @@ import com.mkoi.over9000.model.User;
 import org.androidannotations.annotations.rest.Accept;
 import org.androidannotations.annotations.rest.Get;
 import org.androidannotations.annotations.rest.Post;
+import org.androidannotations.annotations.rest.RequiresHeader;
 import org.androidannotations.annotations.rest.Rest;
 import org.androidannotations.api.rest.MediaType;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 
 /**
+ * Wrapper na REST Client ze Springa, zrobiony z Android Annotations
  * @Author Bartłomiej Borucki
  */
 @Rest(rootUrl = "http://over9000-cryptosync.rhcloud.com", converters = {MappingJacksonHttpMessageConverter.class})
@@ -30,5 +32,13 @@ public interface RestClient {
     @Get("/search/{email}")
     @Accept(MediaType.APPLICATION_JSON)
     FriendResponse searchFriends(String email);
+
+    @Get("/friends")
+    @Accept(MediaType.APPLICATION_JSON)
+    @RequiresHeader("Authorization")
+    FriendResponse getFriends();
+
+    void setHeader(String name, String value);
+    String getHeader(String name);
 
 }
