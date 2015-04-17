@@ -4,7 +4,6 @@ import android.util.Base64;
 
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * @Author Bartłomiej Borucki
@@ -43,24 +43,26 @@ public class AllOrNothing {
         byte keyBytes[] = secretKey.getEncoded();
         byte finalBlock[] = new byte[16];
         System.arraycopy(keyBytes,0,finalBlock,0,keyBytes.length);
-        //do bloczka
-        Key key = keyGenerator.generateKey();
+
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        MessageDigest digest = MessageDigest.getInstance("MD5");
+
         for (int i = 0; i<blockcounter; i++) {
             int minrange = i * blocksize;
             int maxrange = (i + 1) * blocksize;
             byte[] messagepart;
             messagepart = Arrays.copyOfRange(mes,minrange,maxrange);
+
             //1. Szyfrowanie licznika
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte encryptedCounter[] = cipher.doFinal(blockCnt);
 
             //2. XORowanie bloczka z zaszyfrowanym licznikiem
             byte xormessage[] = new byte[16];
-            for (int j = 0; j < mes.length; j++) {
+            for (int j = 0; j < blocksize; j++) {
                 xormessage[j] = (byte) ((int) messagepart[j] ^ (int) encryptedCounter[j]);
             }
             //3. Obliczanie skrótu wyjścia z 2.
-            MessageDigest digest = MessageDigest.getInstance("MD5");
+
             digest.reset();
             digest.update(xormessage);
             byte[] hashedBytes = digest.digest();
@@ -80,16 +82,40 @@ public class AllOrNothing {
         return result;
     }
 
-    public byte[][] divideArray(byte[] source, int blocksize){
-        byte[][] ret = new byte[(int)Math.ceil(source.length / (double)blocksize)][blocksize];
-
-        int start = 0;
-
-        for(int i = 0; i < ret.length; i++) {
-            ret[i] = Arrays.copyOfRange(source, start, start + blocksize);
-            start += blocksize ;
+    public static String RevertTransformation(ArrayList<String> messages) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        StringBuilder sb = new StringBuilder();
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        MessageDigest digest = MessageDigest.getInstance("MD5");
+        int noOfBlocks = messages.size();
+        byte lastBlock[] = Base64.decode(messages.get(noOfBlocks-1), Base64.DEFAULT);
+        byte key[] = new byte[16];
+        System.arraycopy(lastBlock,0,key,0,16);
+        //odzyskiwanie klucza
+        for (int i=0; i< noOfBlocks-1; i++){
+            byte messagePart[] = Base64.decode(messages.get(i), Base64.DEFAULT);
+            digest.reset();
+            digest.update(messagePart);
+            byte[] hashedBytes = digest.digest();
+            for (int k=0; k<key.length;k++){
+                key[k] = (byte)((int)key[k] ^ (int)hashedBytes[k]);
+            }
+        }
+        SecretKey secretKey = new SecretKeySpec(key,"AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        ByteBuffer b = ByteBuffer.allocate(4);
+        b.putInt(noOfBlocks-1);
+        byte blockCnt[] = b.array();
+        for (int i=0; i<noOfBlocks-1; i++){
+            byte encryptedCounter[] = cipher.doFinal(blockCnt);
+            byte messagePart[] = Base64.decode(messages.get(i), Base64.DEFAULT);
+            for (int j=0;j<messagePart.length;j++){
+                messagePart[j] = (byte)((int)messagePart[j] ^ (int)encryptedCounter[j]);
+            }
+            String partOfMessage = new String(messagePart);
+            sb.append(partOfMessage);
         }
 
-        return ret;
+        return sb.toString();
     }
+
 }
