@@ -18,109 +18,156 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
+ * Klasa zapewniająca transformatę AONT
+ *
  * @Author Bartłomiej Borucki
  */
 public class AllOrNothing {
+    /**
+     * Rozmiar bloku wiadomości w bajtach
+     */
+    public static final int BLOCK_SIZE = 16;
+    /**
+     * Rozmiar klucza w bitach
+     */
+    public static final int KEY_SIZE = 128;
+    /**
+     * Algorytm funkcji skrótu
+     */
+    public static final String HASH_ALGORITHM = "MD5";
+    /**
+     * Algorytm szyfru blokowego
+     */
+    public static final String CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";
+    /**
+     * Algorytm do instancji klucza
+     */
+    public static final String KEY_ALGORITHM = "AES";
 
-    public static ArrayList<String> transformMessage(String message) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        // tablica bajtów wiadomości
+    /**
+     * Dokonuje transformaty AONT na wiadomości
+     *
+     * @param message wiadomość
+     * @return tablica bloków zakodowanych w postaci base64
+     * @throws NoSuchAlgorithmException
+     * @throws NoSuchPaddingException
+     * @throws InvalidKeyException
+     * @throws BadPaddingException
+     * @throws IllegalBlockSizeException
+     */
+    public static ArrayList<String> transformMessage(String message) throws NoSuchAlgorithmException,
+            NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+
         ArrayList<String> result = new ArrayList<>();
-        byte mes[] = message.getBytes();
-        //rozmiar bloczka (16B = 128b)
-        int blocksize = 16;
-        //na ile bloczków podzielona będzie wiadomość
-        int blockcounter = (int)Math.ceil(mes.length / (double)blocksize);
-        //tablica bajtów dla licznika
-        ByteBuffer b = ByteBuffer.allocate(4);
-//        b.putInt(blockcounter);
-//        byte blockCnt[] = b.array();
-        //klucz do szyfrowania licznika
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.init(128);
-        //do licznika
+
+        Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(KEY_ALGORITHM);
+        keyGenerator.init(KEY_SIZE);
         SecretKey secretKey = keyGenerator.generateKey();
-        byte keyBytes[] = secretKey.getEncoded();
-        byte finalBlock[] = new byte[16];
-        System.arraycopy(keyBytes,0,finalBlock,0,keyBytes.length);
-
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        MessageDigest digest = MessageDigest.getInstance("MD5");
+        MessageDigest digest = MessageDigest.getInstance(HASH_ALGORITHM);
 
-        for (int i = 0; i<blockcounter; i++) {
+        byte keyBytes[] = secretKey.getEncoded();
+        byte finalBlock[] = new byte[BLOCK_SIZE];
+        byte messageBytes[] = message.getBytes();
+        int messageBlocks = (int) Math.ceil(messageBytes.length / (double) BLOCK_SIZE);
+
+        ByteBuffer b = ByteBuffer.allocate(4); //używane do zaszyfrowania integera
+        System.arraycopy(keyBytes, 0, finalBlock, 0, keyBytes.length);
+
+        for (int i = 0; i < messageBlocks; i++) {
             b.clear();
-            b.putInt(i+1);
-            byte blockCnt[] = b.array();
-            int minrange = i * blocksize;
-            int maxrange = (i + 1) * blocksize;
-            byte[] messagepart;
-            messagepart = Arrays.copyOfRange(mes,minrange,maxrange);
-
-            //1. Szyfrowanie licznika
-            byte encryptedCounter[] = cipher.doFinal(blockCnt);
-
-            //2. XORowanie bloczka z zaszyfrowanym licznikiem
-            byte xormessage[] = new byte[16];
-            for (int j = 0; j < blocksize; j++) {
-                xormessage[j] = (byte) ((int) messagepart[j] ^ (int) encryptedCounter[j]);
+            b.putInt(i + 1);
+            byte counterBytes[] = b.array();
+            int minRange = i * BLOCK_SIZE;
+            int maxRange = (i + 1) * BLOCK_SIZE;
+            byte[] messagePart = Arrays.copyOfRange(messageBytes, minRange, maxRange);
+            byte encryptedCounter[] = cipher.doFinal(counterBytes);
+            byte xorMessage[] = new byte[BLOCK_SIZE];
+            for (int j = 0; j < BLOCK_SIZE; j++) {
+                xorMessage[j] = (byte) ((int) messagePart[j] ^ (int) encryptedCounter[j]);
             }
-            //3. Obliczanie skrótu wyjścia z 2.
-
-            digest.reset();
-            digest.update(xormessage);
-            byte[] hashedBytes = digest.digest();
-
-            String messageHash = Base64.encodeToString(hashedBytes, Base64.DEFAULT); //HASH
-            String messageOut = Base64.encodeToString(xormessage, Base64.DEFAULT);  //MESSAGE (m')
-
-            //3. XORowanie klucza z haszami
-            for (int k = 0; k < finalBlock.length; k++){
-                finalBlock[k] = (byte) ((int) finalBlock[k] ^ (int) hashedBytes[k]);
-            }
-            result.add(messageOut);
+            digest.update(xorMessage);
+            result.add(Base64.encodeToString(xorMessage, Base64.DEFAULT));
         }
-        String finalBlockStr = Base64.encodeToString(finalBlock, Base64.DEFAULT);
-        result.add(finalBlockStr);
-
+        result.add(processFinalBlock(digest, finalBlock));
         return result;
     }
 
-    public static String RevertTransformation(ArrayList<String> messages) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        StringBuilder sb = new StringBuilder();
-        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-        MessageDigest digest = MessageDigest.getInstance("MD5");
-        int noOfBlocks = messages.size();
-        byte lastBlock[] = Base64.decode(messages.get(noOfBlocks-1), Base64.DEFAULT);
-        byte key[] = new byte[16];
-        System.arraycopy(lastBlock,0,key,0,16);
-        //odzyskiwanie klucza
-        for (int i=0; i< noOfBlocks-1; i++){
-            byte messagePart[] = Base64.decode(messages.get(i), Base64.DEFAULT);
-            digest.reset();
-            digest.update(messagePart);
-            byte[] hashedBytes = digest.digest();
-            for (int k=0; k<key.length;k++){
-                key[k] = (byte)((int)key[k] ^ (int)hashedBytes[k]);
-            }
+    /**
+     * Tworzy ostatni blok wiadomości
+     *
+     * @param digest     obiekt do tworzenia funkcji skrótu załadowany wcześniej wiadomościami
+     * @param finalBlock ostatni blok załadowany kluczem
+     * @return ostatni blok base64
+     */
+    private static String processFinalBlock(MessageDigest digest, byte[] finalBlock) {
+        byte[] hashedMessages = digest.digest();
+        for (int i = 0; i < finalBlock.length; i++) {
+            finalBlock[i] = (byte) ((int) finalBlock[i] ^ (int) hashedMessages[i]);
         }
-        SecretKey secretKey = new SecretKeySpec(key,"AES/ECB/PKCS5Padding");
+        return Base64.encodeToString(finalBlock, Base64.DEFAULT);
+    }
+
+    /**
+     * Odwrócenie transformaty AONT
+     *
+     * @param messages lista odebranych wiadomości
+     * @return wiadomość
+     * @throws NoSuchPaddingException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws BadPaddingException
+     * @throws IllegalBlockSizeException
+     */
+    public static String revertTransformation(ArrayList<String> messages) throws NoSuchPaddingException,
+            NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+
+        StringBuilder sb = new StringBuilder();
+        Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
+        int messageBlocks = messages.size();
+        byte lastBlock[] = Base64.decode(messages.get(messageBlocks - 1), Base64.DEFAULT);
+        SecretKey secretKey = getSecretKey(messages, messageBlocks, lastBlock);
+
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         ByteBuffer b = ByteBuffer.allocate(4);
 
-        for (int i=0; i<noOfBlocks-1; i++){
+        for (int i = 0; i < messageBlocks - 1; i++) {
             b.clear();
-            b.putInt(i+1);
+            b.putInt(i + 1);
             byte blockCnt[] = b.array();
             byte encryptedCounter[] = cipher.doFinal(blockCnt);
             byte messagePart[] = Base64.decode(messages.get(i), Base64.DEFAULT);
-            for (int j=0;j<messagePart.length;j++){
-                messagePart[j] = (byte)((int)messagePart[j] ^ (int)encryptedCounter[j]);
+            for (int j = 0; j < messagePart.length; j++) {
+                messagePart[j] = (byte) ((int) messagePart[j] ^ (int) encryptedCounter[j]);
             }
-            String partOfMessage = new String(messagePart);
-            sb.append(partOfMessage);
+            sb.append(new String(messagePart));
         }
-
         return sb.toString();
     }
 
+    /**
+     * Odzyskiwanie klucza z ostatniej wiadomości
+     *
+     * @param messages      lista odebranych wiadomości
+     * @param messageBlocks
+     * @param lastBlock
+     * @return
+     */
+    private static SecretKey getSecretKey(ArrayList<String> messages, int messageBlocks, byte[] lastBlock)
+            throws NoSuchAlgorithmException {
+
+        MessageDigest digest = MessageDigest.getInstance(HASH_ALGORITHM);
+        byte key[] = new byte[16];
+        System.arraycopy(lastBlock, 0, key, 0, 16);
+        for (int i = 0; i < messageBlocks - 1; i++) {
+            byte messagePart[] = Base64.decode(messages.get(i), Base64.DEFAULT);
+            digest.update(messagePart);
+        }
+        byte[] hashedBytes = digest.digest();
+        for (int k = 0; k < key.length; k++) {
+            key[k] = (byte) ((int) key[k] ^ (int) hashedBytes[k]);
+        }
+        return new SecretKeySpec(key, CIPHER_ALGORITHM);
+    }
 }

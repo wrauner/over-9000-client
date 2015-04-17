@@ -7,19 +7,10 @@ import java.util.ArrayList;
 
 public class AllOrNothingTest extends TestCase {
 
-    public void setUp() throws Exception {
-        super.setUp();
-
-    }
-
-    public void tearDown() throws Exception {
-
-    }
-
     public void testTransformMessage() throws Exception {
-        String message = "Siemka, Wojtek. Nie idę na TIKO TIKO portoryko.";
+        String message = "Totally random test string";
         ArrayList<String> result = AllOrNothing.transformMessage(message);
-        String decodedMessage = AllOrNothing.RevertTransformation(result);
+        String decodedMessage = AllOrNothing.revertTransformation(result);
         Assert.assertEquals(message,decodedMessage);
     }
 }
