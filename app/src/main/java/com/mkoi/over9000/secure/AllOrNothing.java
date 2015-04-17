@@ -32,8 +32,8 @@ public class AllOrNothing {
         int blockcounter = (int)Math.ceil(mes.length / (double)blocksize);
         //tablica bajtów dla licznika
         ByteBuffer b = ByteBuffer.allocate(4);
-        b.putInt(blockcounter);
-        byte blockCnt[] = b.array();
+//        b.putInt(blockcounter);
+//        byte blockCnt[] = b.array();
         //klucz do szyfrowania licznika
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
@@ -48,6 +48,9 @@ public class AllOrNothing {
         MessageDigest digest = MessageDigest.getInstance("MD5");
 
         for (int i = 0; i<blockcounter; i++) {
+            b.clear();
+            b.putInt(i+1);
+            byte blockCnt[] = b.array();
             int minrange = i * blocksize;
             int maxrange = (i + 1) * blocksize;
             byte[] messagepart;
@@ -103,9 +106,11 @@ public class AllOrNothing {
         SecretKey secretKey = new SecretKeySpec(key,"AES/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         ByteBuffer b = ByteBuffer.allocate(4);
-        b.putInt(noOfBlocks-1);
-        byte blockCnt[] = b.array();
+
         for (int i=0; i<noOfBlocks-1; i++){
+            b.clear();
+            b.putInt(i+1);
+            byte blockCnt[] = b.array();
             byte encryptedCounter[] = cipher.doFinal(blockCnt);
             byte messagePart[] = Base64.decode(messages.get(i), Base64.DEFAULT);
             for (int j=0;j<messagePart.length;j++){
