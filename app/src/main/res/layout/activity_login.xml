@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/applicationName"
         android:textColor="#ff23ff00"
-        android:textSize="70dp"
+        android:textSize="70sp"
         android:gravity="center"
         android:layout_centerHorizontal="true"
-        android:text="OVER\n9000"
+        android:text="@string/over9000"
         />
     <!--
     <TextView
