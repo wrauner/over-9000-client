@@ -7,11 +7,7 @@ public class RegisterResponse extends ServerResponse {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{error=").append(getError());
-        sb.append(" description=").append(getDescription());
-        sb.append("}");
 
-        return sb.toString();
+        return "{error=" + getError() + " description=" + getDescription() + "}";
     }
 }

@@ -1,5 +1,6 @@
 package com.mkoi.over9000.secure;
 
+import android.annotation.SuppressLint;
 import android.util.Base64;
 
 import java.nio.ByteBuffer;
@@ -20,7 +21,7 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * Klasa zapewniająca transformatę AONT
  *
- * @Author Bartłomiej Borucki
+ * @author Bartłomiej Borucki
  */
 public class AllOrNothing {
     /**
@@ -60,7 +61,7 @@ public class AllOrNothing {
 
         ArrayList<String> result = new ArrayList<>();
 
-        Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
+        @SuppressLint("GetInstance") Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
         KeyGenerator keyGenerator = KeyGenerator.getInstance(KEY_ALGORITHM);
         keyGenerator.init(KEY_SIZE);
         SecretKey secretKey = keyGenerator.generateKey();
@@ -124,7 +125,7 @@ public class AllOrNothing {
             NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 
         StringBuilder sb = new StringBuilder();
-        Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
+        @SuppressLint("GetInstance") Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
         int messageBlocks = messages.size();
         byte lastBlock[] = Base64.decode(messages.get(messageBlocks - 1), Base64.DEFAULT);
         SecretKey secretKey = getSecretKey(messages, messageBlocks, lastBlock);

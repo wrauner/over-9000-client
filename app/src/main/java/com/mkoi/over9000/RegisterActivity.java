@@ -1,5 +1,6 @@
 package com.mkoi.over9000;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by Bartek on 2015-03-18.
  */
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_register)
 public class RegisterActivity extends Activity {
     public static final String LOG_TAG = "Over9000.RegisterActiv";

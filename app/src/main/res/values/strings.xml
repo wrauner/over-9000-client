@@ -21,7 +21,11 @@
     <string name="hello_world">Hello world!</string>
 
     <!-- FRIENDS ACTIVITY -->
-    <string name="searchHint">Wyszukaj użytkownika</string>
     <string name="yourFriendsText">Twoi znajomi</string>
+
+    <!-- SEARCH ACTIVITY -->
+    <string name="searchResult">Wyniki wyszukiwania</string>
+    <string name="searchHint">Wyszukaj email użytkownika</string>
+    <string name="searchMenu">Wyszukaj</string>
 
 </resources>

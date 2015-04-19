@@ -17,12 +17,7 @@ public class LoginResponse extends ServerResponse {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{error=").append(getError());
-        sb.append(" description=").append(getDescription());
-        sb.append(" token=").append(getToken());
-        sb.append("}");
 
-        return sb.toString();
+        return "{error=" + getError() + " description=" + getDescription() + " token=" + getToken() + "}";
     }
 }

@@ -6,31 +6,6 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.mkoi.over9000.FriendsActivity">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/emailSearchText"
-            android:layout_weight="1"
-            android:hint="@string/searchHint"
-            android:lines="1" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/searchButton"
-            android:background="@null"
-            android:src="@android:drawable/ic_menu_search" />
-
-    </LinearLayout>
-
     <ListView
         android:animateLayoutChanges="true"
         android:layout_width="wrap_content"
@@ -44,7 +19,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/yourFriendsText"
         android:id="@+id/yourFriendsText"
-        android:layout_below="@+id/linearLayout"
         android:layout_centerHorizontal="true"
         android:paddingTop="10dp"
         android:paddingBottom="5dp" />

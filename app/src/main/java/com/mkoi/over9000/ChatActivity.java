@@ -1,5 +1,6 @@
 package com.mkoi.over9000;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_chat)
 public class ChatActivity extends Activity {
     public static final String LOG_TAG = "Over9000.ChatActivity";

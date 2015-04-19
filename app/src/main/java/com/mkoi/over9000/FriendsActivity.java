@@ -1,6 +1,8 @@
 package com.mkoi.over9000;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -17,6 +19,8 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.rest.RestService;
@@ -24,7 +28,9 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.List;
 
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_friends)
+@OptionsMenu(R.menu.menu_friends)
 public class FriendsActivity extends Activity {
     public static final String LOG_TAG = "FriendsActivity";
 
@@ -84,5 +90,11 @@ public class FriendsActivity extends Activity {
     public void refreshFriendsResult(List<Friend> friends) {
         Log.d(LOG_TAG, "Friends downloaded: "+friends.size());
         adapter.setFriends(friends);
+    }
+
+    @OptionsItem(R.id.action_search)
+    public void handleSearch() {
+        Intent intent = new Intent(FriendsActivity.this, SearchActivity_.class);
+        startActivity(intent);
     }
 }

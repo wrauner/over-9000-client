@@ -1,5 +1,6 @@
 package com.mkoi.over9000;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.security.NoSuchAlgorithmException;
 
+@SuppressLint("Registered")
 @EActivity(R.layout.activity_login)
 public class LoginActivity extends Activity {
 

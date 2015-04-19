@@ -23,8 +23,8 @@ public class ConnectionDetector {
         if (connectivity != null) {
             NetworkInfo[] infos = connectivity.getAllNetworkInfo();
             if (infos != null) {
-                for (int i = 0; i < infos.length; i++) {
-                    if (infos[i].getState() == NetworkInfo.State.CONNECTED) {
+                for (NetworkInfo info : infos) {
+                    if (info.getState() == NetworkInfo.State.CONNECTED) {
                         return true;
                     }
                 }
