@@ -144,7 +144,7 @@ public class AllOrNothing {
             }
             sb.append(new String(messagePart));
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     /**
