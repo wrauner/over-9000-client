@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -17,7 +16,6 @@ import com.mkoi.over9000.preferences.UserPreferences_;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
@@ -52,27 +50,6 @@ public class FriendsActivity extends Activity {
     @AfterViews
     public void bindAdapter() {
         friendList.setAdapter(adapter);
-    }
-
-    @Click(R.id.searchButton)
-    public void searchClick(View view) {
-        if(!emailSearchText.getText().toString().equals("")) {
-            searchFriend(emailSearchText.getText().toString());
-        } else {
-            emailSearchText.setError("Podaj email");
-        }
-    }
-
-    @Background
-    public void searchFriend(String email) {
-        FriendResponse result = restClient.searchFriends(email);
-        searchResult(result.getFriends());
-    }
-
-    @UiThread
-    public void searchResult(List<Friend> friends) {
-        Log.d(LOG_TAG, "Users found: "+friends.size());
-        adapter.setFriends(friends);
     }
 
     @AfterViews

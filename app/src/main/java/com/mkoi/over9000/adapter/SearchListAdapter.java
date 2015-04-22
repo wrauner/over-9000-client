@@ -13,13 +13,14 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Wojciech Rauner
  */
 @EBean
 public class SearchListAdapter extends BaseAdapter {
-    ArrayList<SearchResultUser> searchResult = new ArrayList<>();
+    List<SearchResultUser> searchResult = new ArrayList<>();
 
     @RootContext
     Context context;
@@ -49,5 +50,10 @@ public class SearchListAdapter extends BaseAdapter {
         }
         searchResultView.bind(getItem(i));
         return searchResultView;
+    }
+
+    public void setSearchResult(List<SearchResultUser> searchResultUsers) {
+        searchResult = searchResultUsers;
+        notifyDataSetChanged();
     }
 }

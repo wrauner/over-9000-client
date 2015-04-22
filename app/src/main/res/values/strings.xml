@@ -25,7 +25,7 @@
     <string name="yourFriendsText">Twoi znajomi</string>
 
     <!-- SEARCH ACTIVITY -->
-    <string name="searchResult">Wyniki wyszukiwania</string>
+    <string name="searchResult">Wyniki wyszukiwania:</string>
     <string name="searchHint">Wyszukaj email użytkownika</string>
     <string name="searchMenu">Wyszukaj</string>
 

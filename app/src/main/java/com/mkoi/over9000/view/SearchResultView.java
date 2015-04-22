@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.mkoi.android_identicons.Identicon;
 import com.mkoi.over9000.R;
 import com.mkoi.over9000.model.SearchResultUser;
 
@@ -22,12 +23,16 @@ public class SearchResultView extends RelativeLayout {
     @ViewById
     TextView searchResultEmail;
 
+    @ViewById
+    Identicon searchResultAvatar;
+
     public SearchResultView(Context context) {
         super(context);
     }
 
     public void bind(SearchResultUser user) {
-        searchResultName.setText(user.getName()+" "+user.getEmail());
+        searchResultName.setText(user.getName()+" "+user.getLastname());
         searchResultEmail.setText(user.getEmail());
+        searchResultAvatar.show(user.getEmail());
     }
 }
