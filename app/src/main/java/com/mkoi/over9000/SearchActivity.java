@@ -12,16 +12,20 @@ import android.widget.TextView;
 import com.mkoi.over9000.adapter.SearchListAdapter;
 import com.mkoi.over9000.http.RestClient;
 import com.mkoi.over9000.message.response.SearchResponse;
+import com.mkoi.over9000.message.response.ServerResponse;
 import com.mkoi.over9000.model.SearchResultUser;
+import com.mkoi.over9000.preferences.UserPreferences_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.rest.RestService;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.List;
 
@@ -42,6 +46,9 @@ public class SearchActivity extends Activity {
 
     @RestService
     RestClient restClient;
+
+    @Pref
+    UserPreferences_ userPreferences;
 
     @Bean
     SearchListAdapter searchListAdapter;
@@ -85,5 +92,24 @@ public class SearchActivity extends Activity {
                 return false;
             }
         });
+    }
+
+    @ItemClick
+    public void searchListItemClicked(SearchResultUser user) {
+        Log.d(LOG_TAG, "Friend request send to "+user.getEmail());
+        sendFriendRequest(user.getEmail());
+    }
+
+    @Background
+    public void sendFriendRequest(String email) {
+        String authHeader = "Bearer "+userPreferences.token().get();
+        restClient.setHeader("Authorization", authHeader);
+        ServerResponse response = restClient.friendRequest(email);
+        friendRequestResult(response);
+    }
+
+    @UiThread
+    public void friendRequestResult(ServerResponse result) {
+        Log.d(LOG_TAG, "Friend request response "+result.getError()+" "+result.getDescription());
     }
 }

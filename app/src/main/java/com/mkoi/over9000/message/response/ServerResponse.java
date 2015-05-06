@@ -1,9 +1,9 @@
 package com.mkoi.over9000.message.response;
 
 /**
- * @Author Bartłomiej Borucki
+ * @author Bartłomiej Borucki
  */
-public abstract class ServerResponse {
+public class ServerResponse {
 
     private String error;
     private String description;
