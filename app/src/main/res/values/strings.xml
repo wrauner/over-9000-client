@@ -5,29 +5,11 @@
     <string name="over9000">OVER\n9000</string>
     <string name="action_settings">Settings</string>
     <!-- LOGIN ACTIVITY -->
-    <string name="emailLabel">E-mail</string>
-    <string name="passwordLabel">Hasło</string>
-    <string name="loginButton">ZALOGUJ</string>
-    <string name="registerButton">Zarejestruj się</string>
-
-    <!-- REGISTER ACTIVITY -->
-    <string name="registerLabel">Rejestracja użytkownika</string>
-    <string name="nameLabel">Imię</string>
-    <string name="lastnameLabel">Nazwisko</string>
     <string name="nickLabel">Nick</string>
-    <string name="longEmailLabel">Adres e-mail</string>
-    <string name="repeatPasswordLabel">Powtórz hasło</string>
-    <string name="createAccount">UTWÓRZ KONTO</string>
-    <string name="title_activity_friends">FriendsActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="loginButton">Wejdź do chatu</string>
 
     <!-- FRIENDS ACTIVITY -->
-    <string name="yourFriendsText">Twoi znajomi</string>
-
-    <!-- SEARCH ACTIVITY -->
-    <string name="searchResult">Wyniki wyszukiwania:</string>
-    <string name="searchHint">Wyszukaj email użytkownika</string>
-    <string name="searchMenu">Wyszukaj</string>
+    <string name="yourFriendsText">Dostępni użytkownicy:</string>
 
     <!-- CHAT ACTIVITY -->
     <string name="messageHint">Wpisz wiadomość</string>

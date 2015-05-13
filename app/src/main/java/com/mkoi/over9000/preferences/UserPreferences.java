@@ -9,10 +9,6 @@ import org.androidannotations.annotations.sharedpreferences.SharedPref;
 @SharedPref(value=SharedPref.Scope.UNIQUE)
 public interface UserPreferences {
 
-    String salt();
-
-    String email();
-
     String token();
 
     String nick();
