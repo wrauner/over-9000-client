@@ -12,8 +12,7 @@ import org.springframework.http.converter.json.MappingJacksonHttpMessageConverte
  * Wrapper na REST Client ze Springa, zrobiony z Android Annotations
  * @author Bartłomiej Borucki
  */
-//@Rest(rootUrl = "http://over9000-cryptosync.rhcloud.com", converters = {MappingJacksonHttpMessageConverter.class})
-@Rest(rootUrl = "http://192.168.0.4:3000", converters = {MappingJacksonHttpMessageConverter.class})
+@Rest(rootUrl = "http://over9000-cryptosync.rhcloud.com", converters = {MappingJacksonHttpMessageConverter.class})
 public interface RestClient {
 
     @Get("/login/{nick}")
