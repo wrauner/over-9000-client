@@ -33,8 +33,8 @@ public class SocketConnection {
     public static final String GET_USERS = "get_users";
     public static final String NEW_CLIENT = "new_client";
     public static final String CLIENT_DISCONNECTED = "client_disconnected";
-    public static final String SERVER_ADDRESS = "http://over9000-cryptosync.rhcloud.com";
-    //public static final String SERVER_ADDRESS = "http://192.168.0.4:3000";
+    //public static final String SERVER_ADDRESS = "http://over9000-cryptosync.rhcloud.com";
+    public static final String SERVER_ADDRESS = "http://192.168.0.4:3000";
 
     private Socket socket;
     private ObjectMapper objectMapper;
@@ -66,8 +66,6 @@ public class SocketConnection {
         socket.on(CLIENT_DISCONNECTED, new SocketListener(CLIENT_DISCONNECTED, handler));
     }
 
-
-
     public void sendMessage(UserMessage message) {
         Log.d(LOG_TAG, "Sending message:" + message.getText());
         try {
@@ -76,6 +74,16 @@ public class SocketConnection {
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error while parsing object to json", e);
         }
+    }
+
+    public void disconnect() {
+        Log.d(LOG_TAG, "Disconnecting");
+        socket.disconnect();
+    }
+
+    public void connectToUser(String id) {
+        Log.d(LOG_TAG, "Sending connection request");
+        socket.emit(CONNECT_TO_USER, id);
     }
 
 }

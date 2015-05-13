@@ -7,14 +7,14 @@ package com.mkoi.over9000.model;
  */
 public class User {
     private String nick;
-    private String socketId;
+    private String id;
 
-    public String getSocketId() {
-        return socketId;
+    public String getId() {
+        return id;
     }
 
-    public void setSocketId(String socketId) {
-        this.socketId = socketId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNick() {

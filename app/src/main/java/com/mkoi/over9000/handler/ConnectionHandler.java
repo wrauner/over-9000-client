@@ -23,14 +23,18 @@ public class ConnectionHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
         Bundle bundle = msg.getData();
-        if(bundle.getString(SocketListener.EVENT).equals(SocketConnection.CLIENT_LIST)) {
+        String event = bundle.getString(SocketListener.EVENT);
+        if(event.equals(SocketConnection.CLIENT_LIST)) {
             usersActivity.refreshList(bundle.getString(SocketListener.DATA));
         }
-        if(bundle.getString(SocketListener.EVENT).equals(SocketConnection.NEW_CLIENT)) {
+        if(event.equals(SocketConnection.NEW_CLIENT)) {
             usersActivity.userConnected(bundle.getString(SocketListener.DATA));
         }
-        if(bundle.getString(SocketListener.EVENT).equals(SocketConnection.CLIENT_DISCONNECTED)) {
+        if(event.equals(SocketConnection.CLIENT_DISCONNECTED)) {
             usersActivity.userDisconnected(bundle.getString(SocketListener.DATA));
+        }
+        if(event.equals(SocketConnection.CONNECTION_ACCEPTED)) {
+
         }
     }
 }

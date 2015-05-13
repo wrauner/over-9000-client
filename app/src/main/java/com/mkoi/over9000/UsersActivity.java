@@ -2,6 +2,7 @@ package com.mkoi.over9000;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -15,10 +16,11 @@ import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.type.TypeFactory;
+import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,6 +47,8 @@ public class UsersActivity extends Activity {
 
     ObjectMapper objectMapper = new ObjectMapper();
 
+    Dialog waitForUser;
+
     @AfterViews
     public void bindAdapter() {
         userList.setAdapter(adapter);
@@ -59,8 +63,7 @@ public class UsersActivity extends Activity {
     public void refreshList(String jsonUsersArray) {
         Log.d(LOG_TAG, "Refreshing user list");
         try {
-            List<User> users = objectMapper.readValue(jsonUsersArray,
-                    TypeFactory.defaultInstance().constructType(List.class, User.class));
+            List<User> users = objectMapper.readValue(jsonUsersArray, new TypeReference<List<User>>(){});
             adapter.setUsers(users);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error while parsing users json", e);
@@ -70,21 +73,47 @@ public class UsersActivity extends Activity {
     public void userConnected(String jsonUser) {
         Log.d(LOG_TAG, "Adding new user");
         try {
-            User user = objectMapper.readValue(jsonUser, User.class);
+            User user = getUser(jsonUser);
             adapter.addUser(user);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error while parsing user json", e);
         }
     }
 
+    private User getUser(String jsonUser) throws IOException {
+        return objectMapper.readValue(jsonUser, User.class);
+    }
+
     public void userDisconnected(String jsonUser) {
         Log.d(LOG_TAG, "Removing user from list");
         try {
-            User user = objectMapper.readValue(jsonUser, User.class);
+            User user = getUser(jsonUser);
             adapter.deleteUser(user);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error while parsing user json", e);
         }
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        connection.disconnect();
+    }
+
+    @ItemClick
+    public void listItemClicked(User user) {
+        Log.d(LOG_TAG, "User requested a connection with "+user.getNick());
+        connection.connectToUser(user.getId());
+        waitForUser = new Dialog(this);
+    }
+
+    public void connectionAccepted(String jsonUser) {
+        Log.d(LOG_TAG, "User accepted connection");
+        try {
+            User user = getUser(jsonUser);
+
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error while parsing user json", e);
+        }
     }
 }
