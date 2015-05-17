@@ -5,30 +5,31 @@ package com.mkoi.over9000.message;
  * @author Wojciech Rauner
  */
 public class UserMessage {
-    private String text;
-    private String nick;
+    private String to;
+    private String from;
+    private String message;
 
-    public String getText() {
-        return text;
+    public String getTo() {
+        return to;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setTo(String to) {
+        this.to = to;
     }
 
-    public String getNick() {
-        return nick;
+    public String getFrom() {
+        return from;
     }
 
-    public void setNick(String nick) {
-        this.nick = nick;
+    public void setFrom(String from) {
+        this.from = from;
     }
 
-    @Override
-    public String toString() {
-        return "UserMessage{" +
-                "text='" + text + '\'' +
-                ", nick='" + nick + '\'' +
-                '}';
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

@@ -1,11 +1,13 @@
 package com.mkoi.over9000.model;
 
+import java.io.Serializable;
+
 /**
  * Klasa reprezentująca użytkownika
  *
  * @author Wojciech Rauner
  */
-public class User {
+public class User implements Serializable{
     private String nick;
     private String id;
 

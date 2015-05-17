@@ -2,6 +2,7 @@ package com.mkoi.over9000;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -10,6 +11,7 @@ import android.widget.ListView;
 import com.mkoi.over9000.adapter.MessageListAdapter;
 import com.mkoi.over9000.handler.ChatHandler;
 import com.mkoi.over9000.message.UserMessage;
+import com.mkoi.over9000.model.User;
 import com.mkoi.over9000.preferences.UserPreferences_;
 import com.mkoi.over9000.socket.SocketConnection;
 
@@ -44,16 +46,23 @@ public class ChatActivity extends Activity {
     @Bean
     MessageListAdapter listAdapter;
 
+    User connectedUser;
+
+    MediaPlayer mediaPlayer;
+
     public void receivedMessage(UserMessage message) {
         Log.d(LOG_TAG, "Received message: "+message.toString());
+        mediaPlayer = MediaPlayer.create(this, R.raw.click);
+        mediaPlayer.start();
         listAdapter.add(message);
     }
 
     @Click(R.id.sendButton)
     public void sendMessage(View view) {
         UserMessage userMessage = new UserMessage();
-        userMessage.setText(messageText.getText().toString().trim());
-        userMessage.setNick(preferences.nick().get());
+        userMessage.setMessage(messageText.getText().toString().trim());
+        userMessage.setFrom(preferences.nick().get());
+        userMessage.setTo(connectedUser.getId());
         listAdapter.add(userMessage);
         messageText.setText("");
         Log.d(LOG_TAG,"Sending message:"+userMessage.toString());
@@ -62,12 +71,16 @@ public class ChatActivity extends Activity {
 
     @AfterInject
     public void setupConnection() {
-        connection.init(preferences.token().get());
         connection.setupChatHandler(chatHandler);
     }
 
     @AfterViews
     public void bindAdapter() {
         chatList.setAdapter(listAdapter);
+    }
+
+    @AfterInject
+    public void fillUser() {
+        connectedUser = (User) getIntent().getExtras().getSerializable("user");
     }
 }

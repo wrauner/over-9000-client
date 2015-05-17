@@ -34,7 +34,7 @@ public class ConnectionHandler extends Handler {
             usersActivity.userDisconnected(bundle.getString(SocketListener.DATA));
         }
         if(event.equals(SocketConnection.CONNECTION_ACCEPTED)) {
-
+            usersActivity.connectionAccepted(bundle.getString(SocketListener.DATA));
         }
     }
 }

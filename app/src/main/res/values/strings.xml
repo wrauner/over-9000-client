@@ -10,7 +10,7 @@
 
     <!-- FRIENDS ACTIVITY -->
     <string name="yourFriendsText">Dostępni użytkownicy:</string>
-    <string name="wait">Poczekaj aż rozmówca zaakceptuje połączenie</string>
+    <string name="wait">Poczekaj</string>
 
     <!-- CHAT ACTIVITY -->
     <string name="messageHint">Wpisz wiadomość</string>

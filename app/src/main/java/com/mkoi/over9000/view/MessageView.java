@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mkoi.android_identicons.SymmetricIdenticon;
 import com.mkoi.over9000.R;
 import com.mkoi.over9000.message.UserMessage;
 
@@ -17,17 +18,17 @@ import org.androidannotations.annotations.ViewById;
 public class MessageView extends LinearLayout {
 
     @ViewById
-    TextView nickText;
+    TextView textMessage;
 
     @ViewById
-    TextView messageText;
+    SymmetricIdenticon userAvatar;
 
     public MessageView(Context context) {
         super(context);
     }
 
     public void bind(UserMessage message) {
-        nickText.setText(message.getNick()+": ");
-        messageText.setText(message.getText());
+        textMessage.setText(message.getMessage());
+        userAvatar.show(message.getFrom());
     }
 }

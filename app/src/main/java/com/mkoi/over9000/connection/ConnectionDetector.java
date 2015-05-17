@@ -5,18 +5,16 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import org.androidannotations.annotations.EBean;
+import org.androidannotations.annotations.RootContext;
 
 /**
- * @Author Bartłomiej Borucki
+ * @author Bartłomiej Borucki
  */
 @EBean
 public class ConnectionDetector {
 
-    private Context context;
-
-    public ConnectionDetector(Context context) {
-        this.context = context;
-    }
+    @RootContext
+    public Context context;
 
     public boolean isConnectedToInternet() {
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

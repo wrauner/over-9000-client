@@ -3,7 +3,9 @@ package com.mkoi.over9000;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.util.Log;
+import android.view.Window;
 import android.widget.ListView;
 
 import com.mkoi.over9000.adapter.UserListAdapter;
@@ -101,17 +103,23 @@ public class UsersActivity extends Activity {
     }
 
     @ItemClick
-    public void listItemClicked(User user) {
+    public void userListItemClicked(User user) {
         Log.d(LOG_TAG, "User requested a connection with "+user.getNick());
         connection.connectToUser(user.getId());
         waitForUser = new Dialog(this);
+        waitForUser.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        waitForUser.setContentView(R.layout.wait_for_connection_dialog);
+        waitForUser.show();
     }
 
     public void connectionAccepted(String jsonUser) {
         Log.d(LOG_TAG, "User accepted connection");
         try {
             User user = getUser(jsonUser);
-
+            waitForUser.dismiss();
+            Intent intent = new Intent(UsersActivity.this, ChatActivity_.class);
+            intent.putExtra("user", user);
+            startActivity(intent);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error while parsing user json", e);
         }

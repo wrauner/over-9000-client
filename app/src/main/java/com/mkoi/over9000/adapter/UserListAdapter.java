@@ -63,8 +63,11 @@ public class UserListAdapter extends BaseAdapter {
     }
 
     public void deleteUser(User user) {
-        int index = users.indexOf(user);
-        users.remove(index);
-        notifyDataSetChanged();
+        for(User search : users) {
+            if(search.getId().equals(user.getId())) {
+                users.remove(search);
+                break;
+            }
+        }
     }
 }
