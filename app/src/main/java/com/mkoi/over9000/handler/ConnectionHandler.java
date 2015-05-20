@@ -36,5 +36,8 @@ public class ConnectionHandler extends Handler {
         if(event.equals(SocketConnection.CONNECTION_ACCEPTED)) {
             usersActivity.connectionAccepted(bundle.getString(SocketListener.DATA));
         }
+        if(event.equals(SocketConnection.CONNECTION_REQUEST)) {
+            usersActivity.connectionRequest(bundle.getString(SocketListener.DATA));
+        }
     }
 }

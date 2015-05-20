@@ -86,4 +86,9 @@ public class SocketConnection {
         socket.emit(CONNECT_TO_USER, id);
     }
 
+    public void acceptConnection(String id) {
+        Log.d(LOG_TAG, "Sending connection accepted");
+        socket.emit(ACCEPT_CONNECTION, id);
+    }
+
 }

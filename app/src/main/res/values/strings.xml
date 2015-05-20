@@ -14,5 +14,7 @@
 
     <!-- CHAT ACTIVITY -->
     <string name="messageHint">Wpisz wiadomość</string>
-
+    <string name="connectionRequest">Nowa rozmowa</string>
+    <string name="acceptConnection">Otwórz</string>
+    <string name="rejectConnection">Odrzuć</string>
 </resources>

@@ -2,7 +2,9 @@ package com.mkoi.over9000;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Window;
@@ -117,11 +119,55 @@ public class UsersActivity extends Activity {
         try {
             User user = getUser(jsonUser);
             waitForUser.dismiss();
-            Intent intent = new Intent(UsersActivity.this, ChatActivity_.class);
-            intent.putExtra("user", user);
-            startActivity(intent);
+            startChatActivity(user);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error while parsing user json", e);
         }
+    }
+
+    private void startChatActivity(User user) {
+        Intent intent = new Intent(UsersActivity.this, ChatActivity_.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
+    }
+
+    public void connectionRequest(String jsonUser) {
+        Log.d(LOG_TAG, "Connection request from "+jsonUser);
+        try {
+            User user = getUser(jsonUser);
+            showNewConnectionDialog(user);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showNewConnectionDialog(final User user) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.connectionRequest));
+        builder.setIcon(android.R.drawable.sym_action_chat);
+        builder.setPositiveButton(getString(R.string.acceptConnection), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                acceptConnection(user);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.rejectConnection), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                rejectConnection(user);
+            }
+        });
+        builder.setMessage(user.getNick());
+        builder.show();
+    }
+
+    private void acceptConnection(User user) {
+        Log.d(LOG_TAG, "Accepted connection");
+        connection.acceptConnection(user.getId());
+        startChatActivity(user);
+    }
+
+    private void rejectConnection(User user) {
+        Log.d(LOG_TAG, "Refused connection");
     }
 }
