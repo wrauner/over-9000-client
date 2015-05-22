@@ -2,6 +2,8 @@ package com.mkoi.over9000.secure;
 
 import android.util.Log;
 
+import org.androidannotations.annotations.EBean;
+
 import java.security.AlgorithmParameterGenerator;
 import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
@@ -23,6 +25,7 @@ import javax.crypto.spec.DHParameterSpec;
  * Obsługa ustalenia wspólnego sekretu protokołem Diffiego-Hellmana
  * @author Wojciech Rauner
  */
+@EBean
 public class DiffieHellman {
 
     public static final String LOG_TAG = "Over9000.DH";
@@ -59,7 +62,7 @@ public class DiffieHellman {
     public void generateParameters() throws NoSuchAlgorithmException, InvalidParameterSpecException {
         Log.d(LOG_TAG, "Generating new DH Params");
         AlgorithmParameterGenerator parameterGenerator = AlgorithmParameterGenerator.getInstance("DH");
-        parameterGenerator.init(256);
+        parameterGenerator.init(192);
         AlgorithmParameters algorithmParameters = parameterGenerator.generateParameters();
         dhParameterSpec = algorithmParameters.getParameterSpec(DHParameterSpec.class);
     }

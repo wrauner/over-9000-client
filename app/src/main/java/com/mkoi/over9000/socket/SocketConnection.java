@@ -6,6 +6,7 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.mkoi.over9000.handler.ChatHandler;
 import com.mkoi.over9000.handler.ConnectionHandler;
+import com.mkoi.over9000.message.ConnectToUser;
 import com.mkoi.over9000.message.UserMessage;
 
 import org.androidannotations.annotations.EBean;
@@ -81,14 +82,22 @@ public class SocketConnection {
         socket.disconnect();
     }
 
-    public void connectToUser(String id) {
+    public void connectToUser(ConnectToUser request) {
         Log.d(LOG_TAG, "Sending connection request");
-        socket.emit(CONNECT_TO_USER, id);
+        try {
+            socket.emit(CONNECT_TO_USER, objectMapper.writeValueAsString(request));
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error while parsing object to json", e);
+        }
     }
 
-    public void acceptConnection(String id) {
+    public void acceptConnection(ConnectToUser request) {
         Log.d(LOG_TAG, "Sending connection accepted");
-        socket.emit(ACCEPT_CONNECTION, id);
+        try {
+            socket.emit(ACCEPT_CONNECTION, objectMapper.writeValueAsString(request));
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error while parsing object to json", e);
+        }
     }
 
 }

@@ -10,6 +10,7 @@ import java.io.Serializable;
 public class User implements Serializable{
     private String nick;
     private String id;
+    private byte[] key;
 
     public String getId() {
         return id;
@@ -25,5 +26,13 @@ public class User implements Serializable{
 
     public void setNick(String nick) {
         this.nick = nick;
+    }
+
+    public byte[] getKey() {
+        return key;
+    }
+
+    public void setKey(byte[] key) {
+        this.key = key;
     }
 }

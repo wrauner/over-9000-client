@@ -12,12 +12,15 @@ import android.widget.ListView;
 
 import com.mkoi.over9000.adapter.UserListAdapter;
 import com.mkoi.over9000.handler.ConnectionHandler;
+import com.mkoi.over9000.message.ConnectToUser;
 import com.mkoi.over9000.model.User;
 import com.mkoi.over9000.preferences.UserPreferences_;
+import com.mkoi.over9000.secure.DiffieHellman;
 import com.mkoi.over9000.socket.SocketConnection;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ItemClick;
@@ -27,6 +30,12 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.List;
 
 @SuppressLint("Registered")
@@ -48,6 +57,9 @@ public class UsersActivity extends Activity {
 
     @Bean
     ConnectionHandler connectionHandler;
+
+    @Bean
+    DiffieHellman diffieHellman;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -107,27 +119,47 @@ public class UsersActivity extends Activity {
     @ItemClick
     public void userListItemClicked(User user) {
         Log.d(LOG_TAG, "User requested a connection with "+user.getNick());
-        connection.connectToUser(user.getId());
         waitForUser = new Dialog(this);
         waitForUser.requestWindowFeature(Window.FEATURE_NO_TITLE);
         waitForUser.setContentView(R.layout.wait_for_connection_dialog);
         waitForUser.show();
+        sendConnectionRequest(user);
+    }
+
+    @Background
+    public void sendConnectionRequest(User user) {
+        ConnectToUser request = new ConnectToUser();
+        try {
+            diffieHellman.generateParameters();
+            PublicKey key = diffieHellman.generateKeypair();
+            request.setSocketId(user.getId());
+            request.setKey(key.getEncoded());
+            connection.connectToUser(request);
+        } catch (NoSuchAlgorithmException | InvalidParameterSpecException | InvalidKeyException
+                | InvalidAlgorithmParameterException e) {
+            Log.e(LOG_TAG, "Error while calculating DH", e);
+            waitForUser.dismiss();
+        }
     }
 
     public void connectionAccepted(String jsonUser) {
         Log.d(LOG_TAG, "User accepted connection");
         try {
             User user = getUser(jsonUser);
+            diffieHellman.finishKeyAgreement(user.getKey());
             waitForUser.dismiss();
-            startChatActivity(user);
+            startChatActivity(user, diffieHellman.getSecret());
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error while parsing user json", e);
+        } catch (InvalidKeySpecException | InvalidKeyException | NoSuchAlgorithmException e) {
+            Log.e(LOG_TAG, "Error while calculating DH", e);
         }
     }
 
-    private void startChatActivity(User user) {
+    private void startChatActivity(User user, byte[] secret) {
         Intent intent = new Intent(UsersActivity.this, ChatActivity_.class);
         intent.putExtra("user", user);
+        intent.putExtra("secret", secret);
         startActivity(intent);
     }
 
@@ -137,7 +169,7 @@ public class UsersActivity extends Activity {
             User user = getUser(jsonUser);
             showNewConnectionDialog(user);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(LOG_TAG, "Error while parsing user json", e);
         }
     }
 
@@ -163,8 +195,21 @@ public class UsersActivity extends Activity {
 
     private void acceptConnection(User user) {
         Log.d(LOG_TAG, "Accepted connection");
-        connection.acceptConnection(user.getId());
-        startChatActivity(user);
+        sendAcceptConnection(user);
+    }
+
+    @Background
+    public void sendAcceptConnection(User user) {
+        ConnectToUser request = new ConnectToUser();
+        try {
+            PublicKey key = diffieHellman.generateKeypair(user.getKey());
+            request.setSocketId(user.getId());
+            request.setKey(key.getEncoded());
+            connection.acceptConnection(request);
+            startChatActivity(user, diffieHellman.getSecret());
+        } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException | InvalidKeySpecException e) {
+            Log.e(LOG_TAG, "Error while calculating DH", e);
+        }
     }
 
     private void rejectConnection(User user) {

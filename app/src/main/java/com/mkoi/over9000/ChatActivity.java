@@ -48,6 +48,8 @@ public class ChatActivity extends Activity {
 
     User connectedUser;
 
+    byte[] secret;
+
     MediaPlayer mediaPlayer;
 
     public void receivedMessage(UserMessage message) {
@@ -60,7 +62,7 @@ public class ChatActivity extends Activity {
     @Click(R.id.sendButton)
     public void sendMessage(View view) {
         UserMessage userMessage = new UserMessage();
-        userMessage.setMessage(messageText.getText().toString().trim());
+        userMessage.setMessage(messageText.getText().toString().trim()+new String(secret));
         userMessage.setFrom(preferences.nick().get());
         userMessage.setTo(connectedUser.getId());
         listAdapter.add(userMessage);
@@ -82,5 +84,6 @@ public class ChatActivity extends Activity {
     @AfterInject
     public void fillUser() {
         connectedUser = (User) getIntent().getExtras().getSerializable("user");
+        secret = getIntent().getExtras().getByteArray("secret");
     }
 }
