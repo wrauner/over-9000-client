@@ -12,8 +12,10 @@ import java.util.ArrayList;
  * @author Bartłomiej Borucki
  */
 public class SecureBlock {
+    public static final int OVERPLUS = 2;
+
     public static String calculateHMAC(String input){
-        String result = "";
+        String result = ""; //TODO Przerobić na hmac
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             digest.update(input.getBytes());
@@ -28,9 +30,8 @@ public class SecureBlock {
     public static ArrayList<SecuredMessage> createBlocksToSend(ArrayList<String> blocks){
         ArrayList<SecuredMessage> result = new ArrayList<>();
         SecuredMessage securedMessage = new SecuredMessage();
-        int nadmiar = 2;
         int rounds = 0;
-        for(int i = 1; i<=blocks.size(); i++){
+        for(int i = 0; i<blocks.size(); i++){
             //Dobre wiadomości
             securedMessage.setId(i);
             securedMessage.setMessage(blocks.get(i));
@@ -38,17 +39,21 @@ public class SecureBlock {
             securedMessage.setHmac(hmac);
             result.add(securedMessage);
             //Złe wiadomości
-            while (rounds < nadmiar-1){
-                securedMessage.setId(i);
-                RandomString rMess = new RandomString(blocks.get(i).length());
-                securedMessage.setMessage(rMess.nextString());
-                RandomString rHash = new RandomString(hmac.length());
-                securedMessage.setHmac(rHash.nextString());
-                result.add(securedMessage);
-                rounds ++;
+            while (rounds < OVERPLUS-1){
+                createFakeMessage(blocks, result, securedMessage, i, hmac);
+                rounds++;
             }
         }
         return result;
+    }
+
+    private static void createFakeMessage(ArrayList<String> blocks, ArrayList<SecuredMessage> result, SecuredMessage securedMessage, int i, String hmac) {
+        RandomString rMess = new RandomString(blocks.get(i).length());
+        RandomString rHash = new RandomString(hmac.length());
+        securedMessage.setMessage(rMess.nextString());
+        securedMessage.setHmac(rHash.nextString());
+        securedMessage.setId(i);
+        result.add(securedMessage);
     }
 
     public static ArrayList<String> prepareReceivedBlocks(ArrayList<SecuredMessage> receivedPayload){
