@@ -10,9 +10,12 @@ import android.widget.ListView;
 
 import com.mkoi.over9000.adapter.MessageListAdapter;
 import com.mkoi.over9000.handler.ChatHandler;
+import com.mkoi.over9000.message.SecuredMessage;
 import com.mkoi.over9000.message.UserMessage;
 import com.mkoi.over9000.model.User;
 import com.mkoi.over9000.preferences.UserPreferences_;
+import com.mkoi.over9000.secure.AllOrNothing;
+import com.mkoi.over9000.secure.SecureBlock;
 import com.mkoi.over9000.socket.SocketConnection;
 
 import org.androidannotations.annotations.AfterInject;
@@ -22,6 +25,16 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
+
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_chat)
@@ -53,7 +66,8 @@ public class ChatActivity extends Activity {
     MediaPlayer mediaPlayer;
 
     public void receivedMessage(UserMessage message) {
-        Log.d(LOG_TAG, "Received message: "+message.toString());
+        //Log.d(LOG_TAG, "Received message: "+message.toString());
+        Log.d(LOG_TAG, "Received message");
         mediaPlayer = MediaPlayer.create(this, R.raw.click);
         mediaPlayer.start();
         listAdapter.add(message);
@@ -61,14 +75,38 @@ public class ChatActivity extends Activity {
 
     @Click(R.id.sendButton)
     public void sendMessage(View view) {
+        if(messageText.toString().trim().length() > 0){
+
         UserMessage userMessage = new UserMessage();
-        userMessage.setMessage(messageText.getText().toString().trim()+new String(secret));
+        SecureRandom random = new SecureRandom();
+        ArrayList<SecuredMessage> messages = new ArrayList<>();
+        try {
+            ArrayList<String> blocks = AllOrNothing.transformMessage(messageText.getText().toString().trim());
+            messages = SecureBlock.createBlocksToSend(blocks);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        }
+        userMessage.setSecuredMessages(messages);
+        //userMessage.setMessage(messageText.getText().toString().trim()+new String(secret));
+        Date nowDate = new Date();
+        long nowTime = nowDate.getTime();
         userMessage.setFrom(preferences.nick().get());
         userMessage.setTo(connectedUser.getId());
+        userMessage.setTimestamp(nowTime);
         listAdapter.add(userMessage);
         messageText.setText("");
         Log.d(LOG_TAG,"Sending message:"+userMessage.toString());
         connection.sendMessage(userMessage);
+        }
+
     }
 
     @AfterInject

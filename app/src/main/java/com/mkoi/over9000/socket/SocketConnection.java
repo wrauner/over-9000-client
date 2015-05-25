@@ -68,7 +68,8 @@ public class SocketConnection {
     }
 
     public void sendMessage(UserMessage message) {
-        Log.d(LOG_TAG, "Sending message:" + message.getMessage());
+        //Log.d(LOG_TAG, "Sending message:" + message.getMessage());
+        Log.d(LOG_TAG, "Sending message");
         try {
             String data = objectMapper.writeValueAsString(message);
             socket.emit(SEND_MESSAGE, data);

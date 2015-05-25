@@ -6,10 +6,24 @@ import android.widget.TextView;
 
 import com.mkoi.android_identicons.SymmetricIdenticon;
 import com.mkoi.over9000.R;
+import com.mkoi.over9000.message.SecuredMessage;
 import com.mkoi.over9000.message.UserMessage;
+import com.mkoi.over9000.secure.AllOrNothing;
+import com.mkoi.over9000.secure.SecureBlock;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
+
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 /**
  * @author Wojciech Rauner
@@ -27,8 +41,18 @@ public class MessageView extends LinearLayout {
         super(context);
     }
 
-    public void bind(UserMessage message) {
-        textMessage.setText(message.getMessage());
+    public void bind(UserMessage message) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+        ArrayList<SecuredMessage> inputBlocks;
+        ArrayList<String> goodBlocks;
+
+        inputBlocks = message.getSecuredMessages();
+        goodBlocks = SecureBlock.prepareReceivedBlocks(inputBlocks);
+        String decodedMessage = AllOrNothing.revertTransformation(goodBlocks);
+        long timestamp = message.getTimestamp();
+        Date testPOP = new Date(timestamp);
+        DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        String dateFormatted = formatter.format(testPOP);
+        textMessage.setText(dateFormatted + "\n"+decodedMessage);
         userAvatar.show(message.getFrom());
     }
 }

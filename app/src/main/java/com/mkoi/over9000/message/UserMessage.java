@@ -1,5 +1,7 @@
 package com.mkoi.over9000.message;
 
+import java.util.ArrayList;
+
 /**
  * Klasa reprezentująca wiadomość
  * @author Wojciech Rauner
@@ -7,7 +9,9 @@ package com.mkoi.over9000.message;
 public class UserMessage {
     private String to;
     private String from;
-    private String message;
+    private long timestamp;
+    //private String message;
+    private ArrayList<SecuredMessage> securedMessages;
 
     public String getTo() {
         return to;
@@ -25,11 +29,27 @@ public class UserMessage {
         this.from = from;
     }
 
-    public String getMessage() {
-        return message;
+//    public String getMessage() {
+//        return message;
+//    }
+//
+//    public void setMessage(String message) {
+//        this.message = message;
+//    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public ArrayList<SecuredMessage> getSecuredMessages() {
+        return securedMessages;
+    }
+
+    public void setSecuredMessages(ArrayList<SecuredMessage> securedMessages) {
+        this.securedMessages = securedMessages;
     }
 }

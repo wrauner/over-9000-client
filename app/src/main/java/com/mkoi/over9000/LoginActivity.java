@@ -8,10 +8,12 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.mkoi.over9000.connection.ConnectionDetector;
+import com.mkoi.over9000.handler.ErrorHandler;
 import com.mkoi.over9000.http.RestClient;
 import com.mkoi.over9000.message.response.LoginResponse;
 import com.mkoi.over9000.preferences.UserPreferences_;
 
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
@@ -32,17 +34,24 @@ public class LoginActivity extends Activity {
     @RestService
     RestClient restClient;
 
+    @Bean
+    ErrorHandler errorHandler;
+
     @Pref
     UserPreferences_ userPreferences;
 
     @Bean
     ConnectionDetector connectionDetector;
 
+    @AfterInject
+    void afterInject(){
+        restClient.setRestErrorHandler(errorHandler);
+    }
+
     @Click(R.id.loginBtn)
-    @Background
     public void loginMe(){
         String nick = loginNick.getText().toString();
-        if(!nick.equals("")){
+        if(nick.length() != 0 && nick.length() <15){
             if(connectionDetector.isConnectedToInternet()){
                 userPreferences.nick().put(nick);
                 loginUser(nick);
@@ -52,6 +61,11 @@ public class LoginActivity extends Activity {
                 dialog.setPositiveButton("OK",null);
                 dialog.show();
             }
+        } else {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage("Niepoprawna długość nicku");
+            dialog.setPositiveButton("OK", null);
+            dialog.show();
         }
     }
 

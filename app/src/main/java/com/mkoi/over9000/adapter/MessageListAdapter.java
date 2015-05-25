@@ -12,8 +12,14 @@ import com.mkoi.over9000.view.MessageView_;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 /**
  * @author Wojciech Rauner
@@ -50,7 +56,19 @@ public class MessageListAdapter extends BaseAdapter{
             messageView = (MessageView) view;
         }
 
-        messageView.bind(getItem(i));
+        try {
+            messageView.bind(getItem(i));
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
         return messageView;
     }
 
