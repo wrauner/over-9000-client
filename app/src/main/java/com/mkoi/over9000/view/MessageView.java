@@ -37,6 +37,8 @@ public class MessageView extends LinearLayout {
     @ViewById
     SymmetricIdenticon userAvatar;
 
+    byte[] secret; //TODO pobranie sekretu
+
     public MessageView(Context context) {
         super(context);
     }
@@ -46,7 +48,7 @@ public class MessageView extends LinearLayout {
         ArrayList<String> goodBlocks;
 
         inputBlocks = message.getSecuredMessages();
-        goodBlocks = SecureBlock.prepareReceivedBlocks(inputBlocks);
+        goodBlocks = SecureBlock.prepareReceivedBlocks(inputBlocks, secret);
         String decodedMessage = AllOrNothing.revertTransformation(goodBlocks);
         long timestamp = message.getTimestamp();
         Date testPOP = new Date(timestamp);
@@ -55,4 +57,5 @@ public class MessageView extends LinearLayout {
         textMessage.setText(dateFormatted + "\n"+decodedMessage);
         userAvatar.show(message.getFrom());
     }
+
 }

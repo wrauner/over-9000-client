@@ -4,9 +4,13 @@ import android.util.Base64;
 
 import com.mkoi.over9000.message.SecuredMessage;
 
-import java.security.MessageDigest;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * @author Bartłomiej Borucki
@@ -14,20 +18,26 @@ import java.util.ArrayList;
 public class SecureBlock {
     public static final int OVERPLUS = 2;
 
-    public static String calculateHMAC(String input){
-        String result = ""; //TODO Przerobić na hmac
+    private static final String HMAC_ALGORITHM = "HmacSHA256";
+
+    public static String calculateHMAC(String input, byte[] key){
+        String result = "";
+        SecretKey secretKey = new SecretKeySpec(key, HMAC_ALGORITHM);
         try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            digest.update(input.getBytes());
-            byte[] hashedInput = digest.digest();
-            result = Base64.encodeToString(hashedInput, Base64.DEFAULT);
+            Mac mac = Mac.getInstance(HMAC_ALGORITHM);
+            mac.init(secretKey);
+            byte[] message = input.getBytes();
+            byte[] resultTab = mac.doFinal(message);
+            result = Base64.encodeToString(resultTab, Base64.DEFAULT);
         } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    public static ArrayList<SecuredMessage> createBlocksToSend(ArrayList<String> blocks){
+    public static ArrayList<SecuredMessage> createBlocksToSend(ArrayList<String> blocks, byte[] key){
         ArrayList<SecuredMessage> result = new ArrayList<>();
         SecuredMessage securedMessage = new SecuredMessage();
         int rounds = 0;
@@ -35,7 +45,7 @@ public class SecureBlock {
             //Dobre wiadomości
             securedMessage.setId(i);
             securedMessage.setMessage(blocks.get(i));
-            String hmac = calculateHMAC(blocks.get(i));
+            String hmac = calculateHMAC(blocks.get(i), key);
             securedMessage.setHmac(hmac);
             result.add(securedMessage);
             //Złe wiadomości
@@ -56,14 +66,14 @@ public class SecureBlock {
         result.add(securedMessage);
     }
 
-    public static ArrayList<String> prepareReceivedBlocks(ArrayList<SecuredMessage> receivedPayload){
+    public static ArrayList<String> prepareReceivedBlocks(ArrayList<SecuredMessage> receivedPayload, byte[] key){
         ArrayList<String> result = new ArrayList<>();
         SecuredMessage securedMessage = new SecuredMessage();
         for(SecuredMessage temp : receivedPayload){
             //pobranie bloku i liczenie hash'a
             String receivedMessage = temp.getMessage();
             String receivedHmac = temp.getHmac();
-            if (receivedHmac.equals(calculateHMAC(receivedMessage))){
+            if (receivedHmac.equals(calculateHMAC(receivedMessage,key))){
                 result.add(receivedMessage);
             }
         }

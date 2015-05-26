@@ -82,7 +82,7 @@ public class ChatActivity extends Activity {
         ArrayList<SecuredMessage> messages = new ArrayList<>();
         try {
             ArrayList<String> blocks = AllOrNothing.transformMessage(messageText.getText().toString().trim());
-            messages = SecureBlock.createBlocksToSend(blocks);
+            messages = SecureBlock.createBlocksToSend(blocks, secret);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
