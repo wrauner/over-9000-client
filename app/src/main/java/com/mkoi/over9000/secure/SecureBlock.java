@@ -42,30 +42,29 @@ public class SecureBlock {
 
     public ArrayList<SecuredMessage> createBlocksToSend(ArrayList<String> blocks, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException {
         ArrayList<SecuredMessage> result = new ArrayList<>();
-        SecuredMessage securedMessage = new SecuredMessage();
         for(int i = 0; i<blocks.size(); i++){
-            createSecureMessage(blocks, key, securedMessage, i);
+            result.add(createSecureMessage(blocks.get(i), key, i));
             for(int j=0; j<OVERPLUS; j++) {
-                createFakeMessage(result, AllOrNothing.BLOCK_SIZE, HMAC_BYTES, i); //TODO shuffle
+                result.add(createFakeMessage(AllOrNothing.BLOCK_SIZE, HMAC_BYTES, i));
             }
-            result.add(securedMessage);
         }
         return result;
     }
 
-    private void createSecureMessage(ArrayList<String> blocks, byte[] key, SecuredMessage securedMessage, int i) throws NoSuchAlgorithmException, InvalidKeyException {
-        securedMessage.setId(i);
-        securedMessage.setMessage(blocks.get(i));
-        String hmac = calculateHMAC(blocks.get(i), key);
-        securedMessage.setHmac(hmac);
+    private SecuredMessage createSecureMessage(String block, byte[] secret, int id) throws InvalidKeyException, NoSuchAlgorithmException {
+        SecuredMessage securedMessage = new SecuredMessage();
+        securedMessage.setHmac(calculateHMAC(block, secret));
+        securedMessage.setMessage(block);
+        securedMessage.setId(id);
+        return securedMessage;
     }
 
-    private void createFakeMessage(ArrayList<SecuredMessage> securedMessages, int blockLength, int hmacLength, int id) {
+    private SecuredMessage createFakeMessage(int blockLength, int hmacLength, int id) {
         SecuredMessage fakeMessage = new SecuredMessage();
         fakeMessage.setMessage(createRandomBase64(blockLength));
         fakeMessage.setHmac(createRandomBase64(hmacLength));
         fakeMessage.setId(id);
-        securedMessages.add(fakeMessage);
+        return fakeMessage;
     }
 
     public ArrayList<String> prepareReceivedBlocks(ArrayList<SecuredMessage> receivedPayload, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException {
