@@ -10,6 +10,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -40,15 +41,23 @@ public class SecureBlock {
         return Base64.encodeToString(resultTab, Base64.DEFAULT);
     }
 
-    public ArrayList<SecuredMessage> createBlocksToSend(ArrayList<String> blocks, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException {
+    public ArrayList<SecuredMessage> createBlocksToSend(ArrayList<String> blocks, byte[] secret) throws InvalidKeyException, NoSuchAlgorithmException {
         ArrayList<SecuredMessage> result = new ArrayList<>();
         for(int i = 0; i<blocks.size(); i++){
-            result.add(createSecureMessage(blocks.get(i), key, i));
-            for(int j=0; j<OVERPLUS; j++) {
-                result.add(createFakeMessage(AllOrNothing.BLOCK_SIZE, HMAC_BYTES, i));
-            }
+            ArrayList<SecuredMessage> messages = createBlocks(blocks, secret, i);
+            Collections.shuffle(messages);
+            result.addAll(messages);
         }
         return result;
+    }
+
+    private ArrayList<SecuredMessage> createBlocks(ArrayList<String> blocks, byte[] secret, int i) throws InvalidKeyException, NoSuchAlgorithmException {
+        ArrayList<SecuredMessage> securedMessages = new ArrayList<>();
+        securedMessages.add(createSecureMessage(blocks.get(i), secret, i));
+        for(int j=0; j<OVERPLUS; j++) {
+            securedMessages.add(createFakeMessage(AllOrNothing.BLOCK_SIZE, HMAC_BYTES, i));
+        }
+        return securedMessages;
     }
 
     private SecuredMessage createSecureMessage(String block, byte[] secret, int id) throws InvalidKeyException, NoSuchAlgorithmException {

@@ -77,32 +77,24 @@ public class ChatActivity extends Activity {
     public void sendMessage(View view) {
         if (messageText.toString().trim().length() > 0) {
             UserMessage userMessage = new UserMessage();
-            ArrayList<SecuredMessage> messages = new ArrayList<>();
+            ArrayList<SecuredMessage> messages;
             try {
                 ArrayList<String> blocks = AllOrNothing.transformMessage(messageText.getText().toString().trim());
                 messages = secureBlock.createBlocksToSend(blocks, secret);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-            } catch (BadPaddingException e) {
-                e.printStackTrace();
-            } catch (IllegalBlockSizeException e) {
-                e.printStackTrace();
+                userMessage.setSecuredMessages(messages);
+                userMessage.setDecodedMessage(messageText.getText().toString().trim());
+                Date nowDate = new Date();
+                long nowTime = nowDate.getTime();
+                userMessage.setFrom(preferences.nick().get());
+                userMessage.setTo(connectedUser.getId());
+                userMessage.setTimestamp(nowTime);
+                listAdapter.add(userMessage);
+                messageText.setText("");
+                Log.d(LOG_TAG, "Sending message:" + userMessage.toString());
+                connection.sendMessage(userMessage);
+            } catch (NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchPaddingException e) {
+                Log.e(LOG_TAG, "Error while creating message", e);
             }
-            userMessage.setSecuredMessages(messages);
-            userMessage.setDecodedMessage(messageText.getText().toString().trim());
-            Date nowDate = new Date();
-            long nowTime = nowDate.getTime();
-            userMessage.setFrom(preferences.nick().get());
-            userMessage.setTo(connectedUser.getId());
-            userMessage.setTimestamp(nowTime);
-            listAdapter.add(userMessage);
-            messageText.setText("");
-            Log.d(LOG_TAG, "Sending message:" + userMessage.toString());
-            connection.sendMessage(userMessage);
         }
     }
 
