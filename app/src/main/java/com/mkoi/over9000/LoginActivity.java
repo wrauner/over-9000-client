@@ -27,7 +27,7 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 public class LoginActivity extends Activity {
 
     public static final String LOG_TAG = "Over9000.LoginActivity";
-    @ViewById(R.id.loginNick)
+    @ViewById(R.id.txtOne)
     EditText loginNick;
 
     @RestService
