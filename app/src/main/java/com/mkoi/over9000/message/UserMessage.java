@@ -1,5 +1,7 @@
 package com.mkoi.over9000.message;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.util.ArrayList;
 
 /**
@@ -10,8 +12,10 @@ public class UserMessage {
     private String to;
     private String from;
     private long timestamp;
-    //private String message;
     private ArrayList<SecuredMessage> securedMessages;
+
+    @JsonIgnore
+    private String decodedMessage;
 
     public String getTo() {
         return to;
@@ -29,14 +33,6 @@ public class UserMessage {
         this.from = from;
     }
 
-//    public String getMessage() {
-//        return message;
-//    }
-//
-//    public void setMessage(String message) {
-//        this.message = message;
-//    }
-
     public long getTimestamp() {
         return timestamp;
     }
@@ -51,5 +47,15 @@ public class UserMessage {
 
     public void setSecuredMessages(ArrayList<SecuredMessage> securedMessages) {
         this.securedMessages = securedMessages;
+    }
+
+    @JsonIgnore
+    public String getDecodedMessage() {
+        return decodedMessage;
+    }
+
+    @JsonIgnore
+    public void setDecodedMessage(String decodedMessage) {
+        this.decodedMessage = decodedMessage;
     }
 }

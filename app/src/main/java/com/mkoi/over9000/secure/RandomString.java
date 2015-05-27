@@ -3,7 +3,7 @@ package com.mkoi.over9000.secure;
 import java.util.Random;
 
 /**
- * @Author Bartłomiej Borucki
+ * @author Bartłomiej Borucki
  */
 public class RandomString {
 

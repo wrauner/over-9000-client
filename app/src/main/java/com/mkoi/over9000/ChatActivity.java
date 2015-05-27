@@ -28,7 +28,6 @@ import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -59,6 +58,9 @@ public class ChatActivity extends Activity {
     @Bean
     MessageListAdapter listAdapter;
 
+    @Bean
+    SecureBlock secureBlock;
+
     User connectedUser;
 
     byte[] secret;
@@ -68,45 +70,40 @@ public class ChatActivity extends Activity {
     public void receivedMessage(UserMessage message) {
         //Log.d(LOG_TAG, "Received message: "+message.toString());
         Log.d(LOG_TAG, "Received message");
-        mediaPlayer = MediaPlayer.create(this, R.raw.click);
-        mediaPlayer.start();
-        listAdapter.add(message);
+        processMessage(message);
     }
 
     @Click(R.id.sendButton)
     public void sendMessage(View view) {
-        if(messageText.toString().trim().length() > 0){
-
-        UserMessage userMessage = new UserMessage();
-        SecureRandom random = new SecureRandom();
-        ArrayList<SecuredMessage> messages = new ArrayList<>();
-        try {
-            ArrayList<String> blocks = AllOrNothing.transformMessage(messageText.getText().toString().trim());
-            messages = SecureBlock.createBlocksToSend(blocks, secret);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
+        if (messageText.toString().trim().length() > 0) {
+            UserMessage userMessage = new UserMessage();
+            ArrayList<SecuredMessage> messages = new ArrayList<>();
+            try {
+                ArrayList<String> blocks = AllOrNothing.transformMessage(messageText.getText().toString().trim());
+                messages = secureBlock.createBlocksToSend(blocks, secret);
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
+            }
+            userMessage.setSecuredMessages(messages);
+            userMessage.setDecodedMessage(messageText.getText().toString().trim());
+            Date nowDate = new Date();
+            long nowTime = nowDate.getTime();
+            userMessage.setFrom(preferences.nick().get());
+            userMessage.setTo(connectedUser.getId());
+            userMessage.setTimestamp(nowTime);
+            listAdapter.add(userMessage);
+            messageText.setText("");
+            Log.d(LOG_TAG, "Sending message:" + userMessage.toString());
+            connection.sendMessage(userMessage);
         }
-        userMessage.setSecuredMessages(messages);
-        //userMessage.setMessage(messageText.getText().toString().trim()+new String(secret));
-        Date nowDate = new Date();
-        long nowTime = nowDate.getTime();
-        userMessage.setFrom(preferences.nick().get());
-        userMessage.setTo(connectedUser.getId());
-        userMessage.setTimestamp(nowTime);
-        listAdapter.add(userMessage);
-        messageText.setText("");
-        Log.d(LOG_TAG,"Sending message:"+userMessage.toString());
-        connection.sendMessage(userMessage);
-        }
-
     }
 
     @AfterInject
@@ -123,5 +120,22 @@ public class ChatActivity extends Activity {
     public void fillUser() {
         connectedUser = (User) getIntent().getExtras().getSerializable("user");
         secret = getIntent().getExtras().getByteArray("secret");
+    }
+
+    public void processMessage(UserMessage message) {
+        ArrayList<SecuredMessage> inputBlocks;
+        ArrayList<String> goodBlocks;
+
+        inputBlocks = message.getSecuredMessages();
+        try {
+            goodBlocks = secureBlock.prepareReceivedBlocks(inputBlocks, secret);
+            message.setDecodedMessage(AllOrNothing.revertTransformation(goodBlocks));
+            listAdapter.add(message);
+            mediaPlayer = MediaPlayer.create(this, R.raw.click);
+            mediaPlayer.start();
+        } catch (InvalidKeyException | NoSuchPaddingException | BadPaddingException |
+                IllegalBlockSizeException | NoSuchAlgorithmException e) {
+            Log.e(LOG_TAG, "Error while decoding message", e);
+        }
     }
 }

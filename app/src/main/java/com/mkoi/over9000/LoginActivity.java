@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.EditText;
 
-import com.mkoi.over9000.connection.ConnectionDetector;
 import com.mkoi.over9000.handler.ErrorHandler;
 import com.mkoi.over9000.http.RestClient;
 import com.mkoi.over9000.message.response.LoginResponse;
@@ -40,9 +39,6 @@ public class LoginActivity extends Activity {
     @Pref
     UserPreferences_ userPreferences;
 
-    @Bean
-    ConnectionDetector connectionDetector;
-
     @AfterInject
     void afterInject(){
         restClient.setRestErrorHandler(errorHandler);
@@ -51,20 +47,12 @@ public class LoginActivity extends Activity {
     @Click(R.id.loginBtn)
     public void loginMe(){
         String nick = loginNick.getText().toString();
-        if(nick.length() != 0 && nick.length() <15){
-            if(connectionDetector.isConnectedToInternet()){
-                userPreferences.nick().put(nick);
-                loginUser(nick);
-            } else {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                dialog.setMessage("Brak połączenia z Internetem");
-                dialog.setPositiveButton("OK",null);
-                dialog.show();
-            }
+        if (nick.length() != 0 && nick.length() < 15) {
+            userPreferences.nick().put(nick);
+            loginUser(nick);
         } else {
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setMessage("Niepoprawna długość nicku");
-            dialog.setPositiveButton("OK", null);
+            dialog.setMessage("Niepoprawna długość nicku").setPositiveButton("OK", null).setIcon(android.R.drawable.ic_dialog_info);
             dialog.show();
         }
     }
@@ -72,8 +60,10 @@ public class LoginActivity extends Activity {
     @Background
     public void loginUser(String nick) {
         LoginResponse loginResponse = restClient.userLogin(nick);
-        Log.d(LOG_TAG, "Login Response: " + loginResponse.toString());
-        loginResult(loginResponse);
+        if(loginResponse!=null) {
+            Log.d(LOG_TAG, "Login Response: " + loginResponse.toString());
+            loginResult(loginResponse);
+        }
     }
 
     @UiThread
