@@ -65,6 +65,7 @@ public class SocketConnection {
         socket.on(CLIENT_LIST, new SocketListener(CLIENT_LIST, handler));
         socket.on(CONNECTION_REQUEST, new SocketListener(CONNECTION_REQUEST, handler));
         socket.on(CONNECTION_ACCEPTED, new SocketListener(CONNECTION_ACCEPTED, handler));
+        socket.on(CONNECTION_REJECTED, new SocketListener(CONNECTION_REJECTED, handler));
         socket.on(NEW_CLIENT, new SocketListener(NEW_CLIENT, handler));
         socket.on(CLIENT_DISCONNECTED, new SocketListener(CLIENT_DISCONNECTED, handler));
     }

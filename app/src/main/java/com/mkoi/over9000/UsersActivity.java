@@ -214,11 +214,13 @@ public class UsersActivity extends Activity {
 
     @Background
     public void sendRejectConnection() {
+        //TODO
         ConnectToUser request = new ConnectToUser();
         connection.rejectConnection(request);
     }
 
     private void rejectConnection(User user) {
+        //TODO
         Log.d(LOG_TAG, "Refused connection");
         sendRejectConnection();
         waitForUser.dismiss();
