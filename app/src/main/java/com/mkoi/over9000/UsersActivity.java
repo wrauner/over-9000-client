@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.Window;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.mkoi.over9000.adapter.UserListAdapter;
 import com.mkoi.over9000.handler.ConnectionHandler;
@@ -154,6 +155,11 @@ public class UsersActivity extends Activity {
         } catch (InvalidKeySpecException | InvalidKeyException | NoSuchAlgorithmException e) {
             Log.e(LOG_TAG, "Error while calculating DH", e);
         }
+    }
+
+    public void connectionRejected(String jsonUser) {
+        Log.d(LOG_TAG, "User rejected connection");
+        Toast.makeText(getApplicationContext(), "Użytkownik odrzucił propozycję rozmowy", Toast.LENGTH_LONG).show();
     }
 
     private void startChatActivity(User user, byte[] secret) {

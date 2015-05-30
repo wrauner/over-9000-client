@@ -130,4 +130,10 @@ public class ChatActivity extends Activity {
             Log.e(LOG_TAG, "Error while decoding message", e);
         }
     }
+
+    @Override
+    public void onStop(){
+        //TODO wysłanie notyfikacji o wyjściu z czatu
+        super.onStop();
+    }
 }
