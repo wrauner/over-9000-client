@@ -30,7 +30,9 @@ public class SocketConnection {
     public static final String CONNECT_TO_USER = "connect_to_user";
     public static final String CONNECTION_REQUEST = "connection_request";
     public static final String ACCEPT_CONNECTION = "accept_connection";
+    public static final String REJECT_CONNECTION = "reject_connection";
     public static final String CONNECTION_ACCEPTED = "connection_accepted";
+    public static final String CONNECTION_REJECTED = "connection_rejected";
     public static final String GET_USERS = "get_users";
     public static final String NEW_CLIENT = "new_client";
     public static final String CLIENT_DISCONNECTED = "client_disconnected";
@@ -96,6 +98,15 @@ public class SocketConnection {
         Log.d(LOG_TAG, "Sending connection accepted");
         try {
             socket.emit(ACCEPT_CONNECTION, objectMapper.writeValueAsString(request));
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Error while parsing object to json", e);
+        }
+    }
+
+    public void rejectConnection(ConnectToUser request) {
+        Log.d(LOG_TAG, "Sending connection rejected");
+        try {
+            socket.emit(REJECT_CONNECTION, objectMapper.writeValueAsString(request));
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error while parsing object to json", e);
         }

@@ -212,7 +212,15 @@ public class UsersActivity extends Activity {
         }
     }
 
+    @Background
+    public void sendRejectConnection() {
+        ConnectToUser request = new ConnectToUser();
+        connection.rejectConnection(request);
+    }
+
     private void rejectConnection(User user) {
         Log.d(LOG_TAG, "Refused connection");
+        sendRejectConnection();
+        waitForUser.dismiss();
     }
 }
