@@ -25,11 +25,9 @@
         android:layout_height="wrap_content"
         android:hint="@string/nickLabel"
         android:gravity="center"
-        android:layout_below="@+id/logo"
         bootstrapbutton:be_roundedCorners="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="70dp"/>
+        android:layout_alignBottom="@+id/logo"
+        android:layout_alignParentStart="true" />
 
     <com.beardedhen.androidbootstrap.BootstrapButton
         android:id="@+id/loginBtn"
@@ -42,13 +40,13 @@
         bootstrapbutton:bb_type="primary" />
 
     <ImageView
-        android:layout_width="fill_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:id="@+id/logo"
         android:src="@drawable/logo"
+        android:layout_marginTop="71dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="70dp" />
+        android:layout_centerHorizontal="true" />
 
     <!--<Button
         android:text="@string/loginButton"

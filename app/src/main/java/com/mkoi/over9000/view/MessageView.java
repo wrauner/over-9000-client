@@ -39,6 +39,9 @@ public class MessageView extends LinearLayout {
     @ViewById
     TextView timestampLabel;
 
+    @ViewById
+    LinearLayout messageBackground;
+
     public MessageView(Context context) {
         super(context);
     }
@@ -52,6 +55,19 @@ public class MessageView extends LinearLayout {
         timestampLabel.setText(dateFormatted);
         textMessage.setText(message.getDecodedMessage());
         userAvatar.show(message.getFrom());
+        if(message.isMine()) {
+            changeLayoutForMine();
+        } else {
+            changeLayoutForOther();
+        }
+    }
+
+    private void changeLayoutForMine() {
+        messageBackground.setBackground(getResources().getDrawable(R.drawable.layout_background_rounded_green));
+    }
+
+    private void changeLayoutForOther() {
+        messageBackground.setBackground(getResources().getDrawable(R.drawable.layout_background_rounded));
     }
 
 }

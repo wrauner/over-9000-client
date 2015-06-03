@@ -1,6 +1,7 @@
 package com.mkoi.over9000.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -27,6 +28,7 @@ import javax.crypto.NoSuchPaddingException;
 
 @EBean
 public class MessageListAdapter extends BaseAdapter{
+    public static final String LOG_TAG = "Over9000.MesListAdap";
     List<UserMessage> messages = new ArrayList<>();
 
     @RootContext
@@ -55,19 +57,10 @@ public class MessageListAdapter extends BaseAdapter{
         } else {
             messageView = (MessageView) view;
         }
-
         try {
             messageView.bind(getItem(i));
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
+        } catch (IllegalBlockSizeException | NoSuchPaddingException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
+            Log.e(LOG_TAG, "Error while creating message view", e);
         }
         return messageView;
     }

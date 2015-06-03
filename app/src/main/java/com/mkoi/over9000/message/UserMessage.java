@@ -17,6 +17,9 @@ public class UserMessage {
     @JsonIgnore
     private String decodedMessage;
 
+    @JsonIgnore
+    private boolean mine;
+
     public String getTo() {
         return to;
     }
@@ -57,5 +60,15 @@ public class UserMessage {
     @JsonIgnore
     public void setDecodedMessage(String decodedMessage) {
         this.decodedMessage = decodedMessage;
+    }
+
+    @JsonIgnore
+    public boolean isMine() {
+        return mine;
+    }
+
+    @JsonIgnore
+    public void setMine(boolean mine) {
+        this.mine = mine;
     }
 }

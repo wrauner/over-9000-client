@@ -10,6 +10,9 @@
     <color name="goldfish">#F38630</color>
     <color name="foodpills">#FA6900</color>
     <color name="bootstrapsuccess">#337AB7</color>
+    <color name="bootstraplightsuccess">#7EB1DC</color>
+    <color name="bootstrapdarksuccesss">#16148D</color>
+    <color name="complementarygreen">#5cb85c</color>
 
     <!--
     <style name="AppBackground">
