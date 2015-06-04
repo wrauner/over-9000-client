@@ -28,10 +28,24 @@ public class SecureBlock {
 
     public static final int HMAC_BYTES = 32;
 
+    /**
+     * Instancja MAC
+     */
     private Mac mac;
 
+    /**
+     * Generacja pseudolosowych liczb
+     */
     private SecureRandom secureRandom;
 
+    /**
+     * Oblicza HMAC dla danych wejściowych
+     * @param input dane
+     * @param secret wspólny sekret
+     * @return hmac w postaci base64
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     */
     public String calculateHMAC(String input, byte[] secret) throws NoSuchAlgorithmException, InvalidKeyException {
         SecretKey secretKey = new SecretKeySpec(secret, HMAC_ALGORITHM);
         mac = Mac.getInstance(HMAC_ALGORITHM);
@@ -41,6 +55,14 @@ public class SecureBlock {
         return Base64.encodeToString(resultTab, Base64.DEFAULT);
     }
 
+    /**
+     * Tworzy dane do wysłania
+     * @param blocks dane do wysłania
+     * @param secret wspólny sekret
+     * @return lista danych do wysłania
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     */
     public ArrayList<SecuredMessage> createBlocksToSend(ArrayList<String> blocks, byte[] secret) throws InvalidKeyException, NoSuchAlgorithmException {
         ArrayList<SecuredMessage> result = new ArrayList<>();
         for(int i = 0; i<blocks.size(); i++){
@@ -51,6 +73,15 @@ public class SecureBlock {
         return result;
     }
 
+    /**
+     * Tworzy dane do wysłania razem z fałszywymi danymi
+     * @param blocks dane do wysłania
+     * @param secret sekret
+     * @param i który blok
+     * @return lista danych
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     */
     private ArrayList<SecuredMessage> createBlocks(ArrayList<String> blocks, byte[] secret, int i) throws InvalidKeyException, NoSuchAlgorithmException {
         ArrayList<SecuredMessage> securedMessages = new ArrayList<>();
         securedMessages.add(createSecureMessage(blocks.get(i), secret, i));
@@ -60,6 +91,15 @@ public class SecureBlock {
         return securedMessages;
     }
 
+    /**
+     * Tworzy poprawną wiadomość
+     * @param block treść wiadomości
+     * @param secret sekret
+     * @param id która w kolejności
+     * @return wiadomość z hmac
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     */
     private SecuredMessage createSecureMessage(String block, byte[] secret, int id) throws InvalidKeyException, NoSuchAlgorithmException {
         SecuredMessage securedMessage = new SecuredMessage();
         securedMessage.setHmac(calculateHMAC(block, secret));
@@ -68,6 +108,13 @@ public class SecureBlock {
         return securedMessage;
     }
 
+    /**
+     * Tworzy sztuczną wiadomość (chaff)
+     * @param blockLength rozmiar bloku
+     * @param hmacLength rozmiar hmac
+     * @param id która w kolejności
+     * @return
+     */
     private SecuredMessage createFakeMessage(int blockLength, int hmacLength, int id) {
         SecuredMessage fakeMessage = new SecuredMessage();
         fakeMessage.setMessage(createRandomBase64(blockLength));
@@ -76,6 +123,14 @@ public class SecureBlock {
         return fakeMessage;
     }
 
+    /**
+     * Filtruje odebrane wiadomości w poszukianiu poprawnych hmac
+     * @param receivedPayload odebrane wiadomości
+     * @param key wspólny sekret
+     * @return po
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     */
     public ArrayList<String> prepareReceivedBlocks(ArrayList<SecuredMessage> receivedPayload, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException {
         ArrayList<String> result = new ArrayList<>();
         for(SecuredMessage temp : receivedPayload){
@@ -88,6 +143,11 @@ public class SecureBlock {
         return result;
     }
 
+    /**
+     * Tworzy losowy ciąg znaków zakodowany base64
+     * @param length długość
+     * @return zakodowany losowy ciąg znakó∑
+     */
     private String createRandomBase64(int length) {
         secureRandom = new SecureRandom();
         byte[] bytes = new byte[length];

@@ -70,10 +70,18 @@ public class SocketConnection {
         }
     }
 
+    /**
+     * Ustawia handler dla wiadomości wysyłanych pomiędzy użytkownikami
+     * @param handler
+     */
     public void setupChatHandler(ChatHandler handler) {
         socket.on(RECEIVED_MESSAGE, new SocketListener(RECEIVED_MESSAGE, handler));
     }
 
+    /**
+     * Ustawia handler dla pozostałych wiadomości
+     * @param handler
+     */
     public void setupConnectionHandler(ConnectionHandler handler) {
         socket.on(CLIENT_LIST, new SocketListener(CLIENT_LIST, handler));
         socket.on(CONNECTION_REQUEST, new SocketListener(CONNECTION_REQUEST, handler));
@@ -83,8 +91,11 @@ public class SocketConnection {
         socket.on(CLIENT_DISCONNECTED, new SocketListener(CLIENT_DISCONNECTED, handler));
     }
 
+    /**
+     * Wysyła wiadomość
+     * @param message wiadomość
+     */
     public void sendMessage(UserMessage message) {
-        //Log.d(LOG_TAG, "Sending message:" + message.getMessage());
         Log.d(LOG_TAG, "Sending message");
         try {
             String data = objectMapper.writeValueAsString(message);
@@ -94,11 +105,18 @@ public class SocketConnection {
         }
     }
 
+    /**
+     * Rozłącza się
+     */
     public void disconnect() {
         Log.d(LOG_TAG, "Disconnecting");
         socket.disconnect();
     }
 
+    /**
+     * Podłącz do użytkownika
+     * @param request żądanie podłączenia do użytkownika
+     */
     public void connectToUser(ConnectToUser request) {
         Log.d(LOG_TAG, "Sending connection request");
         try {
@@ -108,6 +126,10 @@ public class SocketConnection {
         }
     }
 
+    /**
+     * Wysłanie odpowiedzi z akceptacją podłączenia
+     * @param request żądanie podłączenia
+     */
     public void acceptConnection(ConnectToUser request) {
         Log.d(LOG_TAG, "Sending connection accepted");
         try {
@@ -117,6 +139,10 @@ public class SocketConnection {
         }
     }
 
+    /**
+     * Odrzucenie połączenia
+     * @param request odrzucenie połąćzenia
+     */
     public void rejectConnection(ConnectToUser request) {
         Log.d(LOG_TAG, "Sending connection rejected");
         try {

@@ -10,20 +10,36 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
+ * Uniwersalny listener dla obiektów JSON
  * @author Wojciech Rauner
  */
 public class SocketListener implements Emitter.Listener {
     public static final String EVENT = "EVENT";
     public static final String DATA = "DATA";
 
+    /**
+     * Nazwa eventu socket.io (patrz SocketConnection)
+     */
     private String event;
+    /**
+     * Handler obsługujący dany typ eventu
+     */
     private Handler handler;
 
+    /**
+     * Konstruktor ustawiający nazwe eventu i handler
+     * @param event nazwa eventu
+     * @param handler handler do obsługi
+     */
     public SocketListener(String event, Handler handler) {
         this.event = event;
         this.handler = handler;
     }
 
+    /**
+     * Uruchamiana razem z eventem
+     * @param args
+     */
     @Override
     public void call(Object... args) {
         try {
@@ -35,6 +51,10 @@ public class SocketListener implements Emitter.Listener {
         }
     }
 
+    /**
+     * Jeżeli przyszedł pojedynczy obiekt JSON
+     * @param obj dane z eventu
+     */
     private void processObject(JSONObject obj) {
         Bundle bundle = new Bundle();
         bundle.putString(EVENT, event);
@@ -44,6 +64,10 @@ public class SocketListener implements Emitter.Listener {
         handler.sendMessage(message);
     }
 
+    /**
+     * Jeżeli przyszła tablica obiektów
+     * @param array tablica danych z eventu
+     */
     private void processArray(JSONArray array) {
         Bundle bundle = new Bundle();
         bundle.putString(EVENT, event);
