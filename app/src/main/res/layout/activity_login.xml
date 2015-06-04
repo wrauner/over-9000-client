@@ -37,14 +37,14 @@
         bootstrapbutton:bb_icon_right="fa-angle-double-right"
         bootstrapbutton:bb_roundedCorners="true"
         android:layout_below="@+id/txtOne"
-        bootstrapbutton:bb_type="primary" />
+        bootstrapbutton:bb_type="primary"
+        android:layout_marginTop="5dp" />
 
     <ImageView
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:id="@+id/logo"
         android:src="@drawable/logo"
-        android:layout_marginTop="71dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
