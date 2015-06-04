@@ -1,11 +1,21 @@
 package com.mkoi.over9000.message;
 
 /**
+ * Wiadomość z chatu
  * @author Bartłomiej Borucki
  */
 public class SecuredMessage {
+    /**
+     * Kolejność
+     */
     private int id;
+    /**
+     * Wiadomość
+     */
     private String message;
+    /**
+     * HMAC dla wiadomości
+     */
     private String hmac;
 
     public int getId() {

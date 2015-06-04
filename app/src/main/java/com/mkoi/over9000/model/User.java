@@ -7,9 +7,18 @@ import java.io.Serializable;
  *
  * @author Wojciech Rauner
  */
-public class User implements Serializable{
+public class User implements Serializable {
+    /**
+     * Nick użytkownika
+     */
     private String nick;
+    /**
+     * Socket.id użytkownika
+     */
     private String id;
+    /**
+     * Wspólny sekret
+     */
     private byte[] key;
 
     public String getId() {

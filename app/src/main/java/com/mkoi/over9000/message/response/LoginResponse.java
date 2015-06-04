@@ -1,10 +1,14 @@
 package com.mkoi.over9000.message.response;
 
 /**
- * @Author Bartłomiej Borucki
+ * Odpowiedź serwera na logowanie
+ * @author Bartłomiej Borucki
  */
 public class LoginResponse extends ServerResponse {
 
+    /**
+     * Token uwierzytelniający użytkownika
+     */
     private String token;
 
     public String getToken() {
@@ -17,7 +21,6 @@ public class LoginResponse extends ServerResponse {
 
     @Override
     public String toString() {
-
         return "{error=" + getError() + " description=" + getDescription() + " token=" + getToken() + "}";
     }
 }

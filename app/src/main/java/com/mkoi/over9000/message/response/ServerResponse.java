@@ -1,11 +1,18 @@
 package com.mkoi.over9000.message.response;
 
 /**
+ * Ogólna odpowiedź serwera
  * @author Bartłomiej Borucki
  */
 public class ServerResponse {
 
+    /**
+     * Numer błędu
+     */
     private String error;
+    /**
+     * Opis błędu
+     */
     private String description;
 
     public String getDescription() {
