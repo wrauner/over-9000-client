@@ -29,16 +29,6 @@ public class SecureBlock {
     public static final int HMAC_BYTES = 32;
 
     /**
-     * Instancja MAC
-     */
-    private Mac mac;
-
-    /**
-     * Generacja pseudolosowych liczb
-     */
-    private SecureRandom secureRandom;
-
-    /**
      * Oblicza HMAC dla danych wejściowych
      * @param input dane
      * @param secret wspólny sekret
@@ -48,7 +38,7 @@ public class SecureBlock {
      */
     public String calculateHMAC(String input, byte[] secret) throws NoSuchAlgorithmException, InvalidKeyException {
         SecretKey secretKey = new SecretKeySpec(secret, HMAC_ALGORITHM);
-        mac = Mac.getInstance(HMAC_ALGORITHM);
+        Mac mac = Mac.getInstance(HMAC_ALGORITHM);
         mac.init(secretKey);
         byte[] message = input.getBytes();
         byte[] resultTab = mac.doFinal(message);
@@ -149,7 +139,7 @@ public class SecureBlock {
      * @return zakodowany losowy ciąg znakó∑
      */
     private String createRandomBase64(int length) {
-        secureRandom = new SecureRandom();
+        SecureRandom secureRandom = new SecureRandom();
         byte[] bytes = new byte[length];
         secureRandom.nextBytes(bytes);
         return Base64.encodeToString(bytes, Base64.DEFAULT);

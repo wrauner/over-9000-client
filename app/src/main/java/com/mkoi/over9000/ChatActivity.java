@@ -74,11 +74,6 @@ public class ChatActivity extends Activity {
     byte[] secret;
 
     /**
-     * Obiekt używany do odtwarzania dźwięku wiadomości
-     */
-    private MediaPlayer mediaPlayer;
-
-    /**
      * Odebranie wiadomości i rozpoczęcie jej procesowania
      * @param message
      */
@@ -160,7 +155,7 @@ public class ChatActivity extends Activity {
             goodBlocks = secureBlock.prepareReceivedBlocks(inputBlocks, secret);
             message.setDecodedMessage(AllOrNothing.revertTransformation(goodBlocks));
             listAdapter.add(message);
-            mediaPlayer = MediaPlayer.create(this, R.raw.click);
+            MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.click);
             mediaPlayer.start();
         } catch (InvalidKeyException | NoSuchPaddingException | BadPaddingException |
                 IllegalBlockSizeException | NoSuchAlgorithmException e) {

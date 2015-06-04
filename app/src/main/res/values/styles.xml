@@ -4,14 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
     </style>
-    <color name="aoi">#69D2E7</color>
-    <color name="pondwater">#A7DBD8</color>
-    <color name="beachstorm">#E0E4CC</color>
-    <color name="goldfish">#F38630</color>
-    <color name="foodpills">#FA6900</color>
     <color name="bootstrapsuccess">#337AB7</color>
-    <color name="bootstraplightsuccess">#7EB1DC</color>
-    <color name="bootstrapdarksuccesss">#16148D</color>
     <color name="complementarygreen">#5cb85c</color>
 
     <!--

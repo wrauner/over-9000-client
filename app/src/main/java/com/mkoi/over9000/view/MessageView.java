@@ -20,7 +20,7 @@ import java.util.Date;
  * Widok pojedynczej wiadomości
  * @author Wojciech Rauner
  */
-@EViewGroup(R.layout.message_view_new)
+@EViewGroup(R.layout.message_view)
 public class MessageView extends LinearLayout {
 
     @ViewById

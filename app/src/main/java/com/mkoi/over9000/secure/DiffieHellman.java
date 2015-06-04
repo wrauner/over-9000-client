@@ -36,11 +36,6 @@ public class DiffieHellman {
     private DHParameterSpec dhParameterSpec;
 
     /**
-     * Generator kluczy
-     */
-    private KeyPairGenerator keyPairGenerator;
-
-    /**
      * Obiekt który generuje sekret
      */
     private KeyAgreement keyAgreement;
@@ -131,7 +126,7 @@ public class DiffieHellman {
      * @throws InvalidAlgorithmParameterException
      */
     private KeyPair getKeyPair() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
-        keyPairGenerator = KeyPairGenerator.getInstance("DH");
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("DH");
         keyPairGenerator.initialize(dhParameterSpec);
         return keyPairGenerator.generateKeyPair();
     }
