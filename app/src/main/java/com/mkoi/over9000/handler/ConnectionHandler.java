@@ -12,6 +12,7 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 
 /**
+ * Handler wiadomości z serwera
  * @author Wojciech Rauner
  */
 @EBean
@@ -20,6 +21,10 @@ public class ConnectionHandler extends Handler {
     @RootContext
     UsersActivity usersActivity;
 
+    /**
+     * Obsługa danych z wiadomości
+     * @param msg wiadomość
+     */
     @Override
     public void handleMessage(Message msg) {
         Bundle bundle = msg.getData();

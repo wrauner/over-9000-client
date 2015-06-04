@@ -13,7 +13,8 @@ import org.androidannotations.api.rest.RestErrorHandler;
 import org.springframework.core.NestedRuntimeException;
 
 /**
- * @Author Bartłomiej Borucki
+ * Handler błędów z RestClient
+ * @author Bartłomiej Borucki
  */
 @EBean
 public class ErrorHandler implements RestErrorHandler {

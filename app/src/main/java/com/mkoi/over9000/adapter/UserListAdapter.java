@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Adapter listy użytkowników dostępnych na serwerze
  * @author Wojciech Rauner
  */
 @EBean
@@ -52,16 +53,28 @@ public class UserListAdapter extends BaseAdapter {
         return userView;
     }
 
+    /**
+     * Dodaje użytkowników do listy
+     * @param users użytkownicy dostępni na serwerze
+     */
     public void setUsers(List<User> users) {
         this.users = users;
         notifyDataSetChanged();
     }
 
+    /**
+     * Dodaje pojedynczego użytkownika do listy
+     * @param user użytkownik
+     */
     public void addUser(User user) {
         users.add(user);
         notifyDataSetChanged();
     }
 
+    /**
+     * Przeszukuje listę i usuwa użytkownika, który się rozłączył
+     * @param user użytkownik który się rozłączył
+     */
     public void deleteUser(User user) {
         for(User search : users) {
             if(search.getId().equals(user.getId())) {
