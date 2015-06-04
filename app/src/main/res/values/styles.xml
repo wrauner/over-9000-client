@@ -4,7 +4,17 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
     </style>
+    <color name="aoi">#69D2E7</color>
+    <color name="pondwater">#A7DBD8</color>
+    <color name="beachstorm">#E0E4CC</color>
+    <color name="goldfish">#F38630</color>
+    <color name="foodpills">#FA6900</color>
+    <color name="bootstrapsuccess">#337AB7</color>
+    <color name="bootstraplightsuccess">#7EB1DC</color>
+    <color name="bootstrapdarksuccesss">#16148D</color>
+    <color name="complementarygreen">#5cb85c</color>
 
+    <!--
     <style name="AppBackground">
         <item name="android:background">#E6E6E6</item>
         <item name="android:screenOrientation">portrait</item>
@@ -28,7 +38,6 @@
 
     <style name="AppButton">
         <item name="android:background">@drawable/button</item>
-        <item name="android:padding">3dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
@@ -38,6 +47,6 @@
         <item name="android:padding">3dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-    </style>
+    </style>-->
 
 </resources>

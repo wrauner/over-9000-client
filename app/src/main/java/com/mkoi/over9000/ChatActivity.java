@@ -68,7 +68,6 @@ public class ChatActivity extends Activity {
     MediaPlayer mediaPlayer;
 
     public void receivedMessage(UserMessage message) {
-        //Log.d(LOG_TAG, "Received message: "+message.toString());
         Log.d(LOG_TAG, "Received message");
         processMessage(message);
     }
@@ -83,11 +82,10 @@ public class ChatActivity extends Activity {
                 messages = secureBlock.createBlocksToSend(blocks, secret);
                 userMessage.setSecuredMessages(messages);
                 userMessage.setDecodedMessage(messageText.getText().toString().trim());
-                Date nowDate = new Date();
-                long nowTime = nowDate.getTime();
                 userMessage.setFrom(preferences.nick().get());
                 userMessage.setTo(connectedUser.getId());
-                userMessage.setTimestamp(nowTime);
+                userMessage.setTimestamp(getNowTime());
+                userMessage.setMine(true);
                 listAdapter.add(userMessage);
                 messageText.setText("");
                 Log.d(LOG_TAG, "Sending message:" + userMessage.toString());
@@ -96,6 +94,11 @@ public class ChatActivity extends Activity {
                 Log.e(LOG_TAG, "Error while creating message", e);
             }
         }
+    }
+
+    private long getNowTime() {
+        Date nowDate = new Date();
+        return nowDate.getTime();
     }
 
     @AfterInject

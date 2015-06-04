@@ -24,7 +24,7 @@ import javax.crypto.NoSuchPaddingException;
 /**
  * @author Wojciech Rauner
  */
-@EViewGroup(R.layout.message_view)
+@EViewGroup(R.layout.message_view_new)
 public class MessageView extends LinearLayout {
 
     @ViewById
@@ -32,6 +32,15 @@ public class MessageView extends LinearLayout {
 
     @ViewById
     SymmetricIdenticon userAvatar;
+
+    @ViewById
+    TextView userNickLabel;
+
+    @ViewById
+    TextView timestampLabel;
+
+    @ViewById
+    LinearLayout messageBackground;
 
     public MessageView(Context context) {
         super(context);
@@ -42,8 +51,23 @@ public class MessageView extends LinearLayout {
         Date testPOP = new Date(timestamp);
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         String dateFormatted = formatter.format(testPOP);
-        textMessage.setText(dateFormatted + "\n"+message.getDecodedMessage());
+        userNickLabel.setText(message.getFrom());
+        timestampLabel.setText(dateFormatted);
+        textMessage.setText(message.getDecodedMessage());
         userAvatar.show(message.getFrom());
+        if(message.isMine()) {
+            changeLayoutForMine();
+        } else {
+            changeLayoutForOther();
+        }
+    }
+
+    private void changeLayoutForMine() {
+        messageBackground.setBackground(getResources().getDrawable(R.drawable.layout_background_rounded_green));
+    }
+
+    private void changeLayoutForOther() {
+        messageBackground.setBackground(getResources().getDrawable(R.drawable.layout_background_rounded));
     }
 
 }
