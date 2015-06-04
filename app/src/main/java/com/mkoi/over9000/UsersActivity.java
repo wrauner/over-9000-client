@@ -39,6 +39,9 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.InvalidParameterSpecException;
 import java.util.List;
 
+/**
+ * Lista użytkowników
+ */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_users)
 public class UsersActivity extends Activity {
@@ -62,21 +65,37 @@ public class UsersActivity extends Activity {
     @Bean
     DiffieHellman diffieHellman;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    /**
+     * Mapper POJO na JSON
+     */
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-    Dialog waitForUser;
+    /**
+     * Dialog wyświetlany podczas podłączania
+     */
+    private Dialog waitForUser;
 
+    /**
+     * Podpięcie adaptera do listy
+     */
     @AfterViews
     public void bindAdapter() {
         userList.setAdapter(adapter);
     }
 
+    /**
+     * Ustawienie handlera i tokenu na potrzeby socket.io
+     */
     @AfterInject
     public void setupConnection() {
         connection.init(userPreferences.token().get());
         connection.setupConnectionHandler(connectionHandler);
     }
 
+    /**
+     * Pobranie listy użytkowników dostępnych na serwerze
+     * @param jsonUsersArray
+     */
     public void refreshList(String jsonUsersArray) {
         Log.d(LOG_TAG, "Refreshing user list");
         try {
@@ -87,6 +106,10 @@ public class UsersActivity extends Activity {
         }
     }
 
+    /**
+     * Dodanie do listy nowego użytkownika
+     * @param jsonUser
+     */
     public void userConnected(String jsonUser) {
         Log.d(LOG_TAG, "Adding new user");
         try {
@@ -97,10 +120,20 @@ public class UsersActivity extends Activity {
         }
     }
 
+    /**
+     * Mapowanie JSON na obiekt User
+     * @param jsonUser użytkownik w postci obiektu JSON
+     * @return pojo użytkownik
+     * @throws IOException
+     */
     private User getUser(String jsonUser) throws IOException {
         return objectMapper.readValue(jsonUser, User.class);
     }
 
+    /**
+     * Usunięcie użytkownika z listy kiedy się wyloguje
+     * @param jsonUser użytkownik w JSON
+     */
     public void userDisconnected(String jsonUser) {
         Log.d(LOG_TAG, "Removing user from list");
         try {
@@ -111,12 +144,19 @@ public class UsersActivity extends Activity {
         }
     }
 
+    /**
+     * Rozłączenie użytkownika po wyjściu
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         connection.disconnect();
     }
 
+    /**
+     * Wybranie użytkownika do którego chcemy się podłączyć
+     * @param user wybrany użytkownik
+     */
     @ItemClick
     public void userListItemClicked(User user) {
         Log.d(LOG_TAG, "User requested a connection with "+user.getNick());
@@ -127,6 +167,10 @@ public class UsersActivity extends Activity {
         sendConnectionRequest(user);
     }
 
+    /**
+     * Wysłanie żądania połączenia do użytkownika
+     * @param user wybrany użytkownik
+     */
     @Background
     public void sendConnectionRequest(User user) {
         ConnectToUser request = new ConnectToUser();
@@ -143,6 +187,10 @@ public class UsersActivity extends Activity {
         }
     }
 
+    /**
+     * Przejście do kolejnej activity, jeżeli ktoś zaakceptował nasze połączenie
+     * @param jsonUser użytkownik w JSON
+     */
     public void connectionAccepted(String jsonUser) {
         Log.d(LOG_TAG, "User accepted connection");
         try {
@@ -157,11 +205,20 @@ public class UsersActivity extends Activity {
         }
     }
 
+    /**
+     * Połączenie odrzucone
+     * @param jsonUser użytkownik w JSON
+     */
     public void connectionRejected(String jsonUser) {
         Log.d(LOG_TAG, "User rejected connection");
         Toast.makeText(getApplicationContext(), "Użytkownik odrzucił propozycję rozmowy", Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Przejście do chatactivity
+     * @param user użytkownik podłączony
+     * @param secret sekret
+     */
     private void startChatActivity(User user, byte[] secret) {
         Intent intent = new Intent(UsersActivity.this, ChatActivity_.class);
         intent.putExtra("user", user);
@@ -169,6 +226,10 @@ public class UsersActivity extends Activity {
         startActivity(intent);
     }
 
+    /**
+     * Obsługuje przychodzące żądanie połączenia
+     * @param jsonUser użytkownik w JSON
+     */
     public void connectionRequest(String jsonUser) {
         Log.d(LOG_TAG, "Connection request from "+jsonUser);
         try {
@@ -179,6 +240,10 @@ public class UsersActivity extends Activity {
         }
     }
 
+    /**
+     * Wyświetla dialog przychodzącego połączenia
+     * @param user użytkownik
+     */
     private void showNewConnectionDialog(final User user) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.connectionRequest));
@@ -199,11 +264,19 @@ public class UsersActivity extends Activity {
         builder.show();
     }
 
+    /**
+     * Zaakceptowanie połączenia
+     * @param user użytkownik
+     */
     private void acceptConnection(User user) {
         Log.d(LOG_TAG, "Accepted connection");
         sendAcceptConnection(user);
     }
 
+    /**
+     * Wysłanie info o zaakceptowaniu połączenia
+     * @param user
+     */
     @Background
     public void sendAcceptConnection(User user) {
         ConnectToUser request = new ConnectToUser();
@@ -218,6 +291,9 @@ public class UsersActivity extends Activity {
         }
     }
 
+    /**
+     * Wysłanie info o odrzuceniu połączenia
+     */
     @Background
     public void sendRejectConnection() {
         //TODO
@@ -225,6 +301,10 @@ public class UsersActivity extends Activity {
         connection.rejectConnection(request);
     }
 
+    /**
+     * Odrzucenie połączenia
+     * @param user
+     */
     private void rejectConnection(User user) {
         //TODO
         Log.d(LOG_TAG, "Refused connection");

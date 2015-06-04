@@ -12,6 +12,7 @@ import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
 /**
+ * Widok użytkownika na liście
  * @author Wojciech Rauner
  */
 @EViewGroup(R.layout.friend_view)
@@ -23,10 +24,18 @@ public class UserView extends RelativeLayout{
     @ViewById
     Identicon userAvatar;
 
+    /**
+     * Wymagany konstruktor
+     * @param context
+     */
     public UserView(Context context) {
         super(context);
     }
 
+    /**
+     * Podpięcie użytkownika pod widok
+     * @param user użytkownik
+     */
     public void bind(User user) {
         userNick.setText(user.getNick());
         userAvatar.show(user.getNick());

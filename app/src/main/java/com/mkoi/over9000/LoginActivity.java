@@ -22,11 +22,15 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.rest.RestService;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
+/**
+ * Logowanie użytkownika
+ */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_login)
 public class LoginActivity extends Activity {
 
     public static final String LOG_TAG = "Over9000.LoginActivity";
+
     @ViewById(R.id.txtOne)
     EditText loginNick;
 
@@ -39,11 +43,17 @@ public class LoginActivity extends Activity {
     @Pref
     UserPreferences_ userPreferences;
 
+    /**
+     * Ustawienie handlera do błędów z połączeniem
+     */
     @AfterInject
     void afterInject(){
         restClient.setRestErrorHandler(errorHandler);
     }
 
+    /**
+     * Loguje użytkownika
+     */
     @Click(R.id.loginBtn)
     public void loginMe(){
         String nick = loginNick.getText().toString();
@@ -57,6 +67,11 @@ public class LoginActivity extends Activity {
         }
     }
 
+    /**
+     * Przesłanie nicku użytkownika do serwera,
+     * ze względu na połączenie z Internetem odbywa się w osobnym wątku
+     * @param nick nick użytkownika
+     */
     @Background
     public void loginUser(String nick) {
         LoginResponse loginResponse = restClient.userLogin(nick);
@@ -66,6 +81,10 @@ public class LoginActivity extends Activity {
         }
     }
 
+    /**
+     * Odpowiedź serwera na zalogowanie, jeżeli jest ok to pojawia się token JWT
+     * @param response odpowiedź serwera
+     */
     @UiThread
     public void loginResult(LoginResponse response) {
         if(response.getError().equals("0")) {

@@ -23,7 +23,7 @@ import java.net.URISyntaxException;
 @EBean(scope = EBean.Scope.Singleton)
 public class SocketConnection {
 
-    public static final String LOG_TAG = "Over9000.SocketConnection";
+    public static final String LOG_TAG = "Over9000.SocketConn";
     public static final String SEND_MESSAGE = "send_message";
     public static final String RECEIVED_MESSAGE = "received_message";
     public static final String CLIENT_LIST = "client_list";
@@ -39,12 +39,25 @@ public class SocketConnection {
     //public static final String SERVER_ADDRESS = "http://over9000-cryptosync.rhcloud.com";
     public static final String SERVER_ADDRESS = "http://192.168.0.4:3000";
 
+    /**
+     * Obiekt dostępu do socket.io
+     */
     private Socket socket;
+    /**
+     * Mapper pojo/json
+     */
     private ObjectMapper objectMapper;
 
+    /**
+     * Wymagany konstruktor bezparametrowy
+     */
     public SocketConnection() {
     }
 
+    /**
+     * Inicjalizacja połączenia
+     * @param token token uwierzytelniający JWT
+     */
     public void init(String token) {
         try {
             IO.Options opts = new IO.Options();

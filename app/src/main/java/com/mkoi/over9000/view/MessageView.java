@@ -1,5 +1,6 @@
 package com.mkoi.over9000.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,17 +12,12 @@ import com.mkoi.over9000.message.UserMessage;
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
 /**
+ * Widok pojedynczej wiadomości
  * @author Wojciech Rauner
  */
 @EViewGroup(R.layout.message_view_new)
@@ -42,11 +38,20 @@ public class MessageView extends LinearLayout {
     @ViewById
     LinearLayout messageBackground;
 
+    /**
+     * Wymagany konstruktor
+     * @param context referencja do activity
+     */
     public MessageView(Context context) {
         super(context);
     }
 
-    public void bind(UserMessage message) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    /**
+     * Podpięcie POJO do widoku
+     * @param message wiadomość
+     */
+    @SuppressLint("SimpleDateFormat")
+    public void bind(UserMessage message) {
         long timestamp = message.getTimestamp();
         Date testPOP = new Date(timestamp);
         DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
@@ -62,10 +67,16 @@ public class MessageView extends LinearLayout {
         }
     }
 
+    /**
+     * Zmienia tło wiadomości
+     */
     private void changeLayoutForMine() {
         messageBackground.setBackground(getResources().getDrawable(R.drawable.layout_background_rounded_green));
     }
 
+    /**
+     * Zmienia tło wiadmoości
+     */
     private void changeLayoutForOther() {
         messageBackground.setBackground(getResources().getDrawable(R.drawable.layout_background_rounded));
     }

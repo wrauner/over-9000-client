@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -35,6 +34,9 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+/**
+ * Rozmowa z użytkownikiem
+ */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_chat)
 public class ChatActivity extends Activity {
@@ -61,22 +63,38 @@ public class ChatActivity extends Activity {
     @Bean
     SecureBlock secureBlock;
 
-    User connectedUser;
+    /**
+     * Dane użytkownika z którym rozmawiamy
+     */
+    private User connectedUser;
 
+    /**
+     * Wspólny sekret ustalony protokołem DH
+     */
     byte[] secret;
 
-    MediaPlayer mediaPlayer;
+    /**
+     * Obiekt używany do odtwarzania dźwięku wiadomości
+     */
+    private MediaPlayer mediaPlayer;
 
+    /**
+     * Odebranie wiadomości i rozpoczęcie jej procesowania
+     * @param message
+     */
     public void receivedMessage(UserMessage message) {
         Log.d(LOG_TAG, "Received message");
         processMessage(message);
     }
 
+    /**
+     * Wysyła wiadomość podaną przez użytkownika
+     */
     @Click(R.id.sendButton)
-    public void sendMessage(View view) {
+    public void sendMessage() {
         if (messageText.toString().trim().length() > 0) {
             UserMessage userMessage = new UserMessage();
-            ArrayList<SecuredMessage> messages;
+            ArrayList<SecuredMessage> messages; //TODO do this @ background
             try {
                 ArrayList<String> blocks = AllOrNothing.transformMessage(messageText.getText().toString().trim());
                 messages = secureBlock.createBlocksToSend(blocks, secret);
@@ -96,27 +114,43 @@ public class ChatActivity extends Activity {
         }
     }
 
+    /**
+     * @return obecny czas
+     */
     private long getNowTime() {
         Date nowDate = new Date();
         return nowDate.getTime();
     }
 
+    /**
+     * Ustawienie handlera połączenia
+     */
     @AfterInject
     public void setupConnection() {
         connection.setupChatHandler(chatHandler);
     }
 
+    /**
+     * Podpięcie adaptera listy
+     */
     @AfterViews
     public void bindAdapter() {
         chatList.setAdapter(listAdapter);
     }
 
+    /**
+     * Pobranie danych z Intentu
+     */
     @AfterInject
     public void fillUser() {
         connectedUser = (User) getIntent().getExtras().getSerializable("user");
         secret = getIntent().getExtras().getByteArray("secret");
     }
 
+    /**
+     * Odtworzenie wiadomości
+     * @param message wiadomość
+     */
     public void processMessage(UserMessage message) {
         ArrayList<SecuredMessage> inputBlocks;
         ArrayList<String> goodBlocks;
@@ -134,6 +168,9 @@ public class ChatActivity extends Activity {
         }
     }
 
+    /**
+     * Wysłanie info o wyjściu z chatu
+     */
     @Override
     public void onStop(){
         //TODO wysłanie notyfikacji o wyjściu z czatu
