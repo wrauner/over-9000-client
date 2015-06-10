@@ -140,11 +140,6 @@ public class ChatActivity extends Activity {
     @AfterViews
     public void bindAdapter() {
         chatList.setAdapter(listAdapter);
-        UserMessage fakeMessage = new UserMessage();
-        fakeMessage.setFrom("secret");
-        fakeMessage.setTo("secret");
-        fakeMessage.setDecodedMessage(Base64.encodeToString(secret, Base64.DEFAULT));
-        listAdapter.add(fakeMessage);
     }
 
     /**

@@ -163,5 +163,4 @@ public class SocketConnection {
         Log.d(LOG_TAG, "Sending disconnect request");
         socket.emit(DISCONNECT_FROM_USER, socketId);
     }
-
 }

@@ -210,6 +210,9 @@ public class UsersActivity extends Activity {
      */
     public void connectionRejected(String jsonUser) {
         Log.d(LOG_TAG, "User rejected connection");
+        if(waitForUser.isShowing()) {
+            waitForUser.dismiss();
+        }
         Toast.makeText(getApplicationContext(), "Użytkownik odrzucił propozycję rozmowy", Toast.LENGTH_LONG).show();
     }
 
@@ -291,9 +294,9 @@ public class UsersActivity extends Activity {
      * Wysłanie info o odrzuceniu połączenia
      */
     @Background
-    public void sendRejectConnection() {
-        //TODO
+    public void sendRejectConnection(User user) {
         ConnectToUser request = new ConnectToUser();
+        request.setSocketId(user.getId());
         connection.rejectConnection(request);
     }
 
@@ -302,9 +305,7 @@ public class UsersActivity extends Activity {
      * @param user
      */
     private void rejectConnection(User user) {
-        //TODO
         Log.d(LOG_TAG, "Refused connection");
-        sendRejectConnection();
-        waitForUser.dismiss();
+        sendRejectConnection(user);
     }
 }
