@@ -41,7 +41,8 @@ public class SecureBlock {
         Mac mac = Mac.getInstance(HMAC_ALGORITHM);
         mac.init(secretKey);
         byte[] message = input.getBytes();
-        byte[] resultTab = mac.doFinal(message);
+        mac.update(message);
+        byte[] resultTab = mac.doFinal();
         return Base64.encodeToString(resultTab, Base64.DEFAULT);
     }
 

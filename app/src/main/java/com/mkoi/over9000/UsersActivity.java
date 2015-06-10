@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.util.Log;
 import android.view.Window;
 import android.widget.ListView;
@@ -220,10 +219,7 @@ public class UsersActivity extends Activity {
      * @param secret sekret
      */
     private void startChatActivity(User user, byte[] secret) {
-        Intent intent = new Intent(UsersActivity.this, ChatActivity_.class);
-        intent.putExtra("user", user);
-        intent.putExtra("secret", secret);
-        startActivity(intent);
+        ChatActivity_.intent(this).secret(secret).connectedUser(user).start();
     }
 
     /**

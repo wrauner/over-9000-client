@@ -82,5 +82,6 @@ public class UserListAdapter extends BaseAdapter {
                 break;
             }
         }
+        notifyDataSetChanged();
     }
 }

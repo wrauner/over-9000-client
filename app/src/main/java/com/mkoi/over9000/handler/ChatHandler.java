@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.mkoi.over9000.ChatActivity;
 import com.mkoi.over9000.message.UserMessage;
-import com.mkoi.over9000.socket.SocketConnection;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
@@ -15,6 +14,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 
+import static com.mkoi.over9000.socket.SocketConnection.CLIENT_QUIT_CONVERSATION;
+import static com.mkoi.over9000.socket.SocketConnection.RECEIVED_MESSAGE;
 import static com.mkoi.over9000.socket.SocketListener.DATA;
 import static com.mkoi.over9000.socket.SocketListener.EVENT;
 
@@ -41,13 +42,16 @@ public class ChatHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
         Bundle bundle = msg.getData();
-        if(bundle.getString(EVENT).equals(SocketConnection.RECEIVED_MESSAGE)) {
+        if(bundle.getString(EVENT).equals(RECEIVED_MESSAGE)) {
             try {
                 UserMessage message = objectMapper.readValue(bundle.getString(DATA), UserMessage.class);
                 chatActivity.receivedMessage(message);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error while parsing json", e);
             }
+        }
+        if(bundle.getString(EVENT).equals(CLIENT_QUIT_CONVERSATION)) {
+            chatActivity.clientQuitConversation();
         }
     }
 }

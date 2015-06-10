@@ -18,4 +18,6 @@
     <string name="rejectConnection">Odrzuć</string>
     <string name="errorTitle">Coś poszło nie tak...</string>
     <string name="errorMessage">Błąd podczas połączenia z serwerem</string>
+    <string name="disconnectedTitle">Rozłączono</string>
+    <string name="disconnectedMessage">Twój rozmówca się rozłączył</string>
 </resources>

@@ -45,9 +45,14 @@ public class SocketListener implements Emitter.Listener {
         try {
             JSONObject obj = (JSONObject) args[0];
             processObject(obj);
-        } catch (ClassCastException ex) {
-            JSONArray array = (JSONArray) args[0];
-            processArray(array);
+        } catch (ClassCastException e) {
+            try {
+                JSONArray array = (JSONArray) args[0];
+                processArray(array);
+            } catch (ClassCastException ex) {
+                String obj = (String) args[0];
+                processString(obj);
+            }
         }
     }
 
@@ -72,6 +77,19 @@ public class SocketListener implements Emitter.Listener {
         Bundle bundle = new Bundle();
         bundle.putString(EVENT, event);
         bundle.putSerializable(DATA, array.toString());
+        Message message = new Message();
+        message.setData(bundle);
+        handler.sendMessage(message);
+    }
+
+    /**
+     * Jeżeli dane mają formę tylko łańcucha znaków
+     * @param data dane z eventu
+     */
+    private void processString(String data) {
+        Bundle bundle = new Bundle();
+        bundle.putString(EVENT, event);
+        bundle.putSerializable(DATA, data);
         Message message = new Message();
         message.setData(bundle);
         handler.sendMessage(message);

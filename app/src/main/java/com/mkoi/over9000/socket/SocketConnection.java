@@ -36,8 +36,10 @@ public class SocketConnection {
     public static final String GET_USERS = "get_users";
     public static final String NEW_CLIENT = "new_client";
     public static final String CLIENT_DISCONNECTED = "client_disconnected";
-    //public static final String SERVER_ADDRESS = "http://over9000-cryptosync.rhcloud.com";
-    public static final String SERVER_ADDRESS = "http://192.168.0.4:3000";
+    public static final String SERVER_ADDRESS = "http://over9000-cryptosync.rhcloud.com";
+    public static final String DISCONNECT_FROM_USER = "disconnect_from_user";
+    public static final String CLIENT_QUIT_CONVERSATION = "client_quit_conversation";
+    //public static final String SERVER_ADDRESS = "http://192.168.0.4:3000";
 
     /**
      * Obiekt dostępu do socket.io
@@ -76,6 +78,7 @@ public class SocketConnection {
      */
     public void setupChatHandler(ChatHandler handler) {
         socket.on(RECEIVED_MESSAGE, new SocketListener(RECEIVED_MESSAGE, handler));
+        socket.on(CLIENT_QUIT_CONVERSATION, new SocketListener(CLIENT_QUIT_CONVERSATION, handler));
     }
 
     /**
@@ -150,6 +153,15 @@ public class SocketConnection {
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error while parsing object to json", e);
         }
+    }
+
+    /**
+     * Zakończenie połączenia z użytkownikiem
+     * @param socketId id podłączonego usera
+     */
+    public void disconnectFromUser(String socketId) {
+        Log.d(LOG_TAG, "Sending disconnect request");
+        socket.emit(DISCONNECT_FROM_USER, socketId);
     }
 
 }

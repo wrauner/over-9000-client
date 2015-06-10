@@ -2,7 +2,10 @@ package com.mkoi.over9000;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.media.MediaPlayer;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -22,6 +25,8 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
@@ -66,11 +71,13 @@ public class ChatActivity extends Activity {
     /**
      * Dane użytkownika z którym rozmawiamy
      */
-    private User connectedUser;
+    @Extra
+    User connectedUser;
 
     /**
      * Wspólny sekret ustalony protokołem DH
      */
+    @Extra
     byte[] secret;
 
     /**
@@ -79,6 +86,7 @@ public class ChatActivity extends Activity {
      */
     public void receivedMessage(UserMessage message) {
         Log.d(LOG_TAG, "Received message");
+        Log.d(LOG_TAG, "Received message, Secret trace:"+Base64.encodeToString(secret, Base64.DEFAULT));
         processMessage(message);
     }
 
@@ -87,6 +95,7 @@ public class ChatActivity extends Activity {
      */
     @Click(R.id.sendButton)
     public void sendMessage() {
+        Log.d(LOG_TAG, "Send message, Secret trace:"+Base64.encodeToString(secret, Base64.DEFAULT));
         if (messageText.toString().trim().length() > 0) {
             UserMessage userMessage = new UserMessage();
             ArrayList<SecuredMessage> messages; //TODO do this @ background
@@ -131,15 +140,11 @@ public class ChatActivity extends Activity {
     @AfterViews
     public void bindAdapter() {
         chatList.setAdapter(listAdapter);
-    }
-
-    /**
-     * Pobranie danych z Intentu
-     */
-    @AfterInject
-    public void fillUser() {
-        connectedUser = (User) getIntent().getExtras().getSerializable("user");
-        secret = getIntent().getExtras().getByteArray("secret");
+        UserMessage fakeMessage = new UserMessage();
+        fakeMessage.setFrom("secret");
+        fakeMessage.setTo("secret");
+        fakeMessage.setDecodedMessage(Base64.encodeToString(secret, Base64.DEFAULT));
+        listAdapter.add(fakeMessage);
     }
 
     /**
@@ -147,6 +152,7 @@ public class ChatActivity extends Activity {
      * @param message wiadomość
      */
     public void processMessage(UserMessage message) {
+        Log.d(LOG_TAG, "Process message, Secret trace:"+Base64.encodeToString(secret, Base64.DEFAULT));
         ArrayList<SecuredMessage> inputBlocks;
         ArrayList<String> goodBlocks;
 
@@ -164,11 +170,29 @@ public class ChatActivity extends Activity {
     }
 
     /**
-     * Wysłanie info o wyjściu z chatu
+     * Użytkownik nas rozłączył
+     */
+    @UiThread
+    public void clientQuitConversation() {
+        Log.d(LOG_TAG, "Received quit conversation");
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.disconnectedTitle)).setMessage(getString(R.string.disconnectedMessage));
+        builder.setIcon(android.R.drawable.ic_delete);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        builder.show();
+    }
+
+    /**
+     * Rozłączenie po wyjściu z chatu
      */
     @Override
-    public void onStop(){
-        //TODO wysłanie notyfikacji o wyjściu z czatu
-        super.onStop();
+    public void onBackPressed() {
+        connection.disconnectFromUser(connectedUser.getId());
+        finish();
     }
 }
