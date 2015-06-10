@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.EditText;
@@ -80,6 +81,8 @@ public class ChatActivity extends Activity {
     @Extra
     byte[] secret;
 
+    private byte[] savedSecret;
+
     /**
      * Odebranie wiadomości i rozpoczęcie jej procesowania
      * @param message
@@ -90,18 +93,24 @@ public class ChatActivity extends Activity {
         processMessage(message);
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        savedSecret = secret;
+    }
+
     /**
      * Wysyła wiadomość podaną przez użytkownika
      */
     @Click(R.id.sendButton)
     public void sendMessage() {
-        Log.d(LOG_TAG, "Send message, Secret trace:"+Base64.encodeToString(secret, Base64.DEFAULT));
+        Log.d(LOG_TAG, "Send message, Secret trace:"+Base64.encodeToString(savedSecret, Base64.DEFAULT));
         if (messageText.toString().trim().length() > 0) {
             UserMessage userMessage = new UserMessage();
             ArrayList<SecuredMessage> messages; //TODO do this @ background
             try {
                 ArrayList<String> blocks = AllOrNothing.transformMessage(messageText.getText().toString().trim());
-                messages = secureBlock.createBlocksToSend(blocks, secret);
+                messages = secureBlock.createBlocksToSend(blocks, savedSecret);
                 userMessage.setSecuredMessages(messages);
                 userMessage.setDecodedMessage(messageText.getText().toString().trim());
                 userMessage.setFrom(preferences.nick().get());
@@ -147,13 +156,13 @@ public class ChatActivity extends Activity {
      * @param message wiadomość
      */
     public void processMessage(UserMessage message) {
-        Log.d(LOG_TAG, "Process message, Secret trace:"+Base64.encodeToString(secret, Base64.DEFAULT));
+        Log.d(LOG_TAG, "Process message, Secret trace:"+Base64.encodeToString(savedSecret, Base64.DEFAULT));
         ArrayList<SecuredMessage> inputBlocks;
         ArrayList<String> goodBlocks;
 
         inputBlocks = message.getSecuredMessages();
         try {
-            goodBlocks = secureBlock.prepareReceivedBlocks(inputBlocks, secret);
+            goodBlocks = secureBlock.prepareReceivedBlocks(inputBlocks, savedSecret);
             message.setDecodedMessage(AllOrNothing.revertTransformation(goodBlocks));
             listAdapter.add(message);
             MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.click);
@@ -176,7 +185,7 @@ public class ChatActivity extends Activity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
+                quitActivity();
             }
         });
         builder.show();
@@ -188,6 +197,12 @@ public class ChatActivity extends Activity {
     @Override
     public void onBackPressed() {
         connection.disconnectFromUser(connectedUser.getId());
+        savedSecret = null;
+        finish();
+    }
+
+    @UiThread
+    public void quitActivity() {
         finish();
     }
 }
