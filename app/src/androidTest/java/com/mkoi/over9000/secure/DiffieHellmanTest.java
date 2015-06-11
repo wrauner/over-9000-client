@@ -13,28 +13,19 @@ import java.util.Arrays;
 
 public class DiffieHellmanTest extends TestCase {
 
-    public void testDiffieHellman() {
+    public static final int NUMBER_OF_TRANSACTIONS = 2;
+
+    public void testDiffieHellman() throws InvalidParameterSpecException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, InvalidKeySpecException {
         DiffieHellman alice = new DiffieHellman();
         DiffieHellman bob = new DiffieHellman();
 
-        try {
+        for(int i=0; i<NUMBER_OF_TRANSACTIONS; i++) {
             alice.generateParameters();
             PublicKey alicePublicKey = alice.generateKeypair();
             PublicKey bobPublicKey = bob.generateKeypair(alicePublicKey.getEncoded());
             alice.finishKeyAgreement(bobPublicKey.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (InvalidParameterSpecException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
+            Assert.assertTrue(Arrays.equals(alice.getSecret(), bob.getSecret()));
         }
-
-        Assert.assertTrue(Arrays.equals(alice.getSecret(), bob.getSecret()));
     }
 
 }
